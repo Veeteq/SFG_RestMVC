@@ -13,9 +13,10 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryListDTO;
 import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 
 @Controller
-@RequestMapping(path = "/api/v1/categories")
+@RequestMapping(path = CategoryController.BASE_URL)
 public class CategoryController {
 
+    public static final String  BASE_URL = "/api/v1/categories";
     private final CategoryService categoryService;
 
     @Autowired

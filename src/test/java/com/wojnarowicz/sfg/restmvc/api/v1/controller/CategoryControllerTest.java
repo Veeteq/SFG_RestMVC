@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
+import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 class CategoryControllerTest {
 
@@ -37,7 +38,9 @@ class CategoryControllerTest {
     void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -78,5 +81,14 @@ class CategoryControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name", equalTo("Fruits")))
         .andExpect(jsonPath("$.id", equalTo(1)));
+    }
+    
+    @Test
+    void testFindByNameNotFound() throws Exception {
+        when(categoryService.findByName(anyString())).thenThrow(ResourceNotFoundException.class);
+        
+        mockMvc.perform(get(CategoryController.BASE_URL + "/bla")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
     }
 }
