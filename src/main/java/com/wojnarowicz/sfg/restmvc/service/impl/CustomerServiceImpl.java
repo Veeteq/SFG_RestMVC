@@ -97,6 +97,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private String getCustomerUrl(Long id) {
-        return CustomerController.BASE_URL + id;
+        return CustomerController.BASE_URL + "/" + id;
     }
 }
