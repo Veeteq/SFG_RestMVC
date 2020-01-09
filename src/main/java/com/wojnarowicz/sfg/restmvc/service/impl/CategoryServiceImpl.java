@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CategoryMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
+import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 
@@ -33,6 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public CategoryDTO findByName(String name) {
-		return categoryMapper.categoryToCategoryDTO(categoryRespository.findByName(name));
+		return categoryRespository.findByName(name)
+		.map(category -> {
+			CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+			return categoryDTO;
+		})
+		.orElseThrow(ResourceNotFoundException::new);
 	}
 }

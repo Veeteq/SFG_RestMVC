@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.restmvc.api.v1.controller;
+package com.wojnarowicz.sfg.restmvc.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package com.wojnarowicz.sfg.restmvc.api.v1.controller;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
 import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
+import com.wojnarowicz.sfg.restmvc.exception.RestResponseEntityExceptionHandler;
 import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 class CategoryControllerTest {
 

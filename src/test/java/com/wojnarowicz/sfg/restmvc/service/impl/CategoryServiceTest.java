@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ class CategoryServiceTest {
         
         assertNotNull(categoryRespository);
         
-        when(categoryRespository.findByName(anyString())).thenReturn(category1);
+        when(categoryRespository.findByName(anyString())).thenReturn(Optional.of(category1));
         CategoryDTO categoryDTO = categoryService.findByName("Fruits");
         
         assertEquals("Fruits", categoryDTO.getName());

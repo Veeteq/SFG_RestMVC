@@ -10,6 +10,7 @@ import com.wojnarowicz.sfg.restmvc.api.v1.controller.CustomerController;
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CustomerMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
+import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 
@@ -45,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
                     customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
     
     @Override
@@ -81,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
             }
             
             return saveAndConvertCustomer(customer);
-        }).orElseThrow(RuntimeException::new);
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
