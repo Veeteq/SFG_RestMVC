@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.restmvc.service;
+package com.wojnarowicz.sfg.restmvc.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,6 +17,7 @@ import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CategoryMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Category;
 import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
+import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 import com.wojnarowicz.sfg.restmvc.service.impl.CategoryServiceImpl;
 
 class CategoryServiceTest {

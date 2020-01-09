@@ -1,10 +1,12 @@
-package com.wojnarowicz.sfg.restmvc.service;
+package com.wojnarowicz.sfg.restmvc.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CustomerMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
+import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 import com.wojnarowicz.sfg.restmvc.service.impl.CustomerServiceImpl;
 
 class CustomerServiceTest {
@@ -112,5 +115,28 @@ class CustomerServiceTest {
         assertEquals(ID_1, savedDTO.getId());
         assertEquals(BLACK, savedDTO.getLastName());
         assertEquals(API_V1_CUSTOMERS + ID_1, savedDTO.getCustomerUrl());
+    }
+    
+    @Test
+    public void testUpdateDTO() {
+        CustomerDTO emptyDTO = new CustomerDTO();
+        
+        Customer customer1 = new Customer();
+        customer1.setId(ID_1);
+        customer1.setFirstName(JACK);
+        customer1.setLastName(BLACK);
+        
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer1);
+        CustomerDTO savedDTO = customerService.updateDTO(ID_1, emptyDTO);
+        
+        assertEquals(ID_1, savedDTO.getId());
+        assertEquals(BLACK, savedDTO.getLastName());
+        assertEquals(API_V1_CUSTOMERS + ID_1, savedDTO.getCustomerUrl());
+    }
+
+    @Test
+    public void testDeleteById() {
+        customerRepository.deleteById(ID_1);
+        verify(customerRepository, times(1)).deleteById(anyLong());
     }
 }

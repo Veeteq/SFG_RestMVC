@@ -107,6 +107,58 @@ class CustomerControllerTest {
         .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS + ID_1)));
     }
 
+    @Test
+    void testUpdateDTO() throws Exception {
+        CustomerDTO customer1 = new CustomerDTO();
+        customer1.setId(ID_1);
+        customer1.setFirstName(JACK);
+        customer1.setLastName(BLACK);
+        customer1.setCustomerUrl(API_V1_CUSTOMERS + ID_1);
+        
+        when(customerService.updateDTO(any(Long.class), any(CustomerDTO.class))).thenReturn(customer1);
+        mockMvc.perform(put("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer1)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", equalTo(ID_1.intValue())))
+        .andExpect(jsonPath("$.firstName", equalTo(JACK)))
+        .andExpect(jsonPath("$.lastName", equalTo(BLACK)))
+        .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS + ID_1)));
+    }
+
+    @Test
+    void testPatchDTO() throws Exception {
+        //given
+        CustomerDTO customer = new CustomerDTO();
+        customer.setFirstName("Fred");
+
+        CustomerDTO returnDTO = new CustomerDTO();
+        returnDTO.setId(ID_1);
+        returnDTO.setFirstName(customer.getFirstName());
+        returnDTO.setLastName("Flintstone");
+        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        
+        when(customerService.patchDTO(any(Long.class), any(CustomerDTO.class))).thenReturn(returnDTO);
+        
+        mockMvc.perform(patch("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(returnDTO)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", equalTo(ID_1.intValue())))
+        .andExpect(jsonPath("$.firstName", equalTo("Fred")))
+        .andExpect(jsonPath("$.lastName", equalTo("Flintstone")))
+        .andExpect(jsonPath("$.customerUrl", equalTo("/api/v1/customers/1")));
+    }
+
+    @Test
+    void testDeleteById() throws Exception {
+        mockMvc.perform(delete("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+        
+        verify(customerService, times(1)).deleteById(anyLong());
+    }
+
     private String asJsonString(Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);
@@ -114,5 +166,4 @@ class CustomerControllerTest {
             throw new RuntimeException(e);
         }
     }
-
 }
