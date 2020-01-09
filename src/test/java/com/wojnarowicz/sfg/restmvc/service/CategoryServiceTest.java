@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CategoryMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Category;
-import com.wojnarowicz.sfg.restmvc.repositories.CategoryRespository;
+import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.service.impl.CategoryServiceImpl;
 
 class CategoryServiceTest {
@@ -24,7 +24,7 @@ class CategoryServiceTest {
     CategoryService categoryService;
 
     @Mock
-    CategoryRespository categoryRespository;
+    CategoryRepository categoryRespository;
 
     @BeforeEach
     void setUp() throws Exception {

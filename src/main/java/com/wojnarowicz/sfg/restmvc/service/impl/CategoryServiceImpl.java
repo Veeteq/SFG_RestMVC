@@ -8,17 +8,17 @@ import org.springframework.stereotype.Service;
 
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CategoryMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CategoryDTO;
-import com.wojnarowicz.sfg.restmvc.repositories.CategoryRespository;
+import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.service.CategoryService;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-	private final CategoryRespository categoryRespository;
+	private final CategoryRepository categoryRespository;
 	private final CategoryMapper categoryMapper;
 
 	@Autowired
-	public CategoryServiceImpl(CategoryRespository categoryRespository, CategoryMapper categoryMapper) {
+	public CategoryServiceImpl(CategoryRepository categoryRespository, CategoryMapper categoryMapper) {
 		this.categoryRespository = categoryRespository;
 		this.categoryMapper = categoryMapper;
 	}

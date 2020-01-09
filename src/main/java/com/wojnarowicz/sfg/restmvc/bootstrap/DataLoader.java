@@ -5,20 +5,29 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.wojnarowicz.sfg.restmvc.domain.Category;
-import com.wojnarowicz.sfg.restmvc.repositories.CategoryRespository;
+import com.wojnarowicz.sfg.restmvc.domain.Customer;
+import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
+import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    private final CategoryRespository categoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public DataLoader(CategoryRespository categoryRepository) {
+    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
         this.categoryRepository = categoryRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        loadCategories();
+        loadCustomers();
+    }
+
+    private void loadCategories() {
         Category fruits = new Category();
         fruits.setName("Fruits");
 
@@ -40,7 +49,29 @@ public class DataLoader implements CommandLineRunner {
         categoryRepository.save(exotic);
         categoryRepository.save(nuts);
 
-
-        System.out.println("Data Loaded = " + categoryRepository.count() );
+        System.out.println("Category Data Loaded = " + categoryRepository.count() );
     }
+    
+    private void loadCustomers() {
+        Customer customer1 = new Customer();
+        customer1.setId(1L);
+        customer1.setFirstName("Jack");
+        customer1.setLastName("Black");
+        customerRepository.save(customer1);
+        
+        Customer customer2 = new Customer();
+        customer2.setId(2L);
+        customer2.setFirstName("Vanessa");
+        customer2.setLastName("Gray");
+        customerRepository.save(customer2);
+        
+        Customer customer3 = new Customer();
+        customer3.setId(3L);
+        customer3.setFirstName("David");
+        customer3.setLastName("Winter");
+        customerRepository.save(customer3);
+
+        System.out.println("Customer Data Loaded = " + customerRepository.count() );
+    }
+
 }
