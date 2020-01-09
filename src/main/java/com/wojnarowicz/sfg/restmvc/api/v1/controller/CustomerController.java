@@ -18,9 +18,10 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerListDTO;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 
 @Controller
-@RequestMapping(path = "/api/v1/customers")
+@RequestMapping(path = CustomerController.BASE_URL)
 public class CustomerController {
 
+    public final static String BASE_URL = "/api/v1/customers"; 
     private final CustomerService customerService;
 
     @Autowired
