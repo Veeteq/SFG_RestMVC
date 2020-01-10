@@ -17,6 +17,10 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerListDTO;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(description = "API Customer Controller")
 @RestController
 @RequestMapping(path = CustomerController.BASE_URL)
 public class CustomerController {
@@ -29,12 +33,14 @@ public class CustomerController {
         this.customerService = customerService;
     }
     
+    @ApiOperation(value = "Returns Customers", notes = "Return all customers", produces = "application/json")
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public CustomerListDTO listCustomers() {
         return new CustomerListDTO(customerService.findAll());
     }
     
+    @ApiOperation(value = "Returns Customer By Id", notes = "Return customers by Id")
     @GetMapping(path = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public CustomerDTO getCustomerById(@PathVariable(name = "id") String id) {

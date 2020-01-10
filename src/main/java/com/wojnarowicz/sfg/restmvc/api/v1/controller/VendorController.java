@@ -17,6 +17,10 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorDTO;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorListDTO;
 import com.wojnarowicz.sfg.restmvc.service.VendorService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(description = "API Vendor Controller")
 @RestController()
 @RequestMapping(path = VendorController.BASE_URL)
 public class VendorController {
@@ -29,12 +33,14 @@ public class VendorController {
         this.vendorService = vendorService;
     }
 
+	@ApiOperation(value = "Lists Vendors")
 	@GetMapping
 	@ResponseStatus(code = HttpStatus.OK)
 	public VendorListDTO getAll() {
 	    return vendorService.findAll();
 	}
 	
+	@ApiOperation(value = "List Vendor by ID")
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public VendorDTO getById(@PathVariable(name = "id") String id) {
@@ -42,12 +48,14 @@ public class VendorController {
 	    return vendorService.findById(longId);
 	}
 	
+	@ApiOperation(value = "Save a Vendor")
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public VendorDTO saveVendor(@RequestBody VendorDTO vendorDTO) {
 	    return vendorService.saveDTO(vendorDTO);
 	}
 	
+	@ApiOperation(value = "Deletes a Vendor")
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void deleteById(@PathVariable(name = "id") String id) {
@@ -55,6 +63,7 @@ public class VendorController {
 	    vendorService.deleteById(longId);
 	}
 	
+	@ApiOperation(value = "Updates a Vendor")
     @PutMapping(path = "/{id}", consumes="application/json", produces="application/json")
 	@ResponseStatus(code = HttpStatus.OK)
 	public VendorDTO updateVendor(@PathVariable(name = "id") String id, @RequestBody VendorDTO vendorDTO) {
@@ -63,6 +72,7 @@ public class VendorController {
         return vendorService.updateDTO(longId, vendorDTO);
     }
 
+	@ApiOperation(value = "Apply patch to a Vendor")
     @PatchMapping(path = "/{id}", consumes="application/json", produces="application/json")
     @ResponseStatus(code = HttpStatus.OK)
     public VendorDTO patchVendor(@PathVariable(name = "id") String id, @RequestBody VendorDTO vendorDTO) {
