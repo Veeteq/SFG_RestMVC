@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.wojnarowicz.sfg.restmvc.api.v1.controller.VendorController;
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.VendorMapper;
 import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorDTO;
+import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorListDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Vendor;
 import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.repositories.VendorRepository;
@@ -27,11 +28,12 @@ public class VendorServiceImpl implements VendorService {
 	}
 
 	@Override
- 	public List<VendorDTO> findAll() {
-		return vendorRepository.findAll()
+ 	public VendorListDTO findAll() {
+		List<VendorDTO> vendorDTOs = vendorRepository.findAll()
 		        .stream()
 		        .map(vendorMapper::vendorToVendorDTO)
 		        .collect(Collectors.toList());
+		return new VendorListDTO(vendorDTOs);
 	}
 
 	@Override
@@ -70,10 +72,6 @@ public class VendorServiceImpl implements VendorService {
 	@Override
 	public VendorDTO patchDTO(Long id, VendorDTO vendorDTO) {
         return vendorRepository.findById(id).map(vendor -> {
-            if(vendorDTO.getName() != null){
-            	vendor.setName(vendorDTO.getName());
-            }
-
             if(vendorDTO.getName() != null){
             	vendor.setName(vendorDTO.getName());
             }

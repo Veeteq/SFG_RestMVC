@@ -21,6 +21,7 @@ import com.wojnarowicz.sfg.restmvc.bootstrap.DataLoader;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
 import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
+import com.wojnarowicz.sfg.restmvc.repositories.VendorRepository;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 import com.wojnarowicz.sfg.restmvc.service.impl.CustomerServiceImpl;
 
@@ -34,6 +35,9 @@ class CustomerServiceImplIT {
     @Autowired
     CategoryRepository categoryRepository;
     
+    @Autowired
+    VendorRepository vendorRepository;
+    
     CustomerService customerService;
 
     @BeforeEach
@@ -42,7 +46,7 @@ class CustomerServiceImplIT {
         System.out.println(customerRepository.findAll().size());
 
         //setup data for testing
-        DataLoader loader = new DataLoader(categoryRepository, customerRepository);        
+        DataLoader loader = new DataLoader(categoryRepository, customerRepository, vendorRepository);        
         loader.run(); //load data
 
         customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);        

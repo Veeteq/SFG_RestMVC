@@ -6,25 +6,30 @@ import org.springframework.stereotype.Component;
 
 import com.wojnarowicz.sfg.restmvc.domain.Category;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
+import com.wojnarowicz.sfg.restmvc.domain.Vendor;
 import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
+import com.wojnarowicz.sfg.restmvc.repositories.VendorRepository;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
     @Autowired
-    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
         loadCategories();
         loadCustomers();
+        loadVendors();
     }
 
     private void loadCategories() {
@@ -74,4 +79,19 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Customer Data Loaded = " + customerRepository.count() );
     }
 
+    private void loadVendors() {
+        Vendor vendor1 = new Vendor();
+        vendor1.setName("Exotic Fruits Company");
+        vendorRepository.save(vendor1);
+        
+        Vendor vendor2 = new Vendor();
+        vendor2.setName("Western Tasty Fruits Ltd.");
+        vendorRepository.save(vendor2);
+        
+        Vendor vendor3 = new Vendor();
+        vendor3.setName("Home Fruits");
+        vendorRepository.save(vendor3);
+        
+        System.out.println("Vendor Data Loaded = " + vendorRepository.count() );
+    }
 }

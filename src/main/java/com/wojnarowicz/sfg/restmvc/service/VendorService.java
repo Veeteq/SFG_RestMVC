@@ -1,12 +1,11 @@
 package com.wojnarowicz.sfg.restmvc.service;
 
-import java.util.List;
-
 import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorDTO;
+import com.wojnarowicz.sfg.restmvc.api.v1.model.VendorListDTO;
 
 public interface VendorService {
 
-	List<VendorDTO> findAll();
+	VendorListDTO findAll();
 	
 	VendorDTO findByName(String name);
 

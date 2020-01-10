@@ -37,7 +37,7 @@ public class CustomerController {
     
     @GetMapping(path = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public CustomerDTO getCustomerByName(@PathVariable(name = "id") String id) {
+    public CustomerDTO getCustomerById(@PathVariable(name = "id") String id) {
         Long longId = Long.valueOf(id);
         return customerService.findById(longId);
     }
