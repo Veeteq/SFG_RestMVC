@@ -46,7 +46,7 @@ class CustomerServiceImplIT {
         System.out.println(customerRepository.findAll().size());
 
         //setup data for testing
-        DataLoader loader = new DataLoader(categoryRepository, customerRepository, vendorRepository);        
+        DataLoader loader = new DataLoader(categoryRepository, customerRepository, vendorRepository, null);        
         loader.run(); //load data
 
         customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);        

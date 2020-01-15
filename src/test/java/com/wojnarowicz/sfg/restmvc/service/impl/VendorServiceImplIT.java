@@ -46,7 +46,7 @@ class VendorServiceImplIT {
         System.out.println(vendorRepository.findAll().size());
 
         //setup data for testing
-        DataLoader loader = new DataLoader(categoryRepository, customerRepository, vendorRepository);        
+        DataLoader loader = new DataLoader(categoryRepository, customerRepository, vendorRepository, null);        
         loader.run(); //load data
 
         vendorService = new VendorServiceImpl(vendorRepository, VendorMapper.INSTANCE);        

@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.restmvc;
+package com.wojnarowicz.sfg;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

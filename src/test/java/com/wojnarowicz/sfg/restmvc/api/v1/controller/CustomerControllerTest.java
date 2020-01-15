@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.exception.RestResponseEntityExceptionHandler;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
+
+import lombok.extern.slf4j.Slf4j;
 class CustomerControllerTest {
 
     private static final Long ID_1 = Long.valueOf(1);
@@ -115,6 +118,26 @@ class CustomerControllerTest {
         .andExpect(jsonPath("$.customerUrl", equalTo(CustomerController.BASE_URL + "/" + ID_1)));
     }
 
+    @Test
+    void testSaveAndPrintDTO() throws UnsupportedEncodingException, Exception {
+        CustomerDTO customer1 = new CustomerDTO();
+        customer1.setId(ID_1);
+        customer1.setFirstName(JACK);
+        customer1.setLastName(BLACK);
+        customer1.setCustomerUrl(CustomerController.BASE_URL +  "/" + ID_1);
+        
+        when(customerService.saveDTO(any(CustomerDTO.class))).thenReturn(customer1);
+        
+        String response = mockMvc.perform(post(CustomerController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer1)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        
+        System.out.println(response);
+    }
+    
     @Test
     void testUpdateDTO() throws Exception {
         CustomerDTO customer1 = new CustomerDTO();

@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.wojnarowicz.sfg.gw.domain.Agent;
+import com.wojnarowicz.sfg.gw.domain.BsoDocument;
+import com.wojnarowicz.sfg.gw.domain.BsoStatus;
+import com.wojnarowicz.sfg.gw.repository.AgentRepository;
 import com.wojnarowicz.sfg.restmvc.domain.Category;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
 import com.wojnarowicz.sfg.restmvc.domain.Vendor;
@@ -17,12 +21,14 @@ public class DataLoader implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
     private final VendorRepository vendorRepository;
+    private final AgentRepository agentRepository;
 
     @Autowired
-    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
+    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository, AgentRepository agentRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
+        this.agentRepository = agentRepository;
     }
 
     @Override
@@ -30,6 +36,7 @@ public class DataLoader implements CommandLineRunner {
         loadCategories();
         loadCustomers();
         loadVendors();
+        loadAgents();
     }
 
     private void loadCategories() {
@@ -54,7 +61,7 @@ public class DataLoader implements CommandLineRunner {
         categoryRepository.save(exotic);
         categoryRepository.save(nuts);
 
-        System.out.println("Category Data Loaded = " + categoryRepository.count() );
+        System.out.println("Category Data Loaded = " + categoryRepository.count());
     }
     
     private void loadCustomers() {
@@ -93,5 +100,27 @@ public class DataLoader implements CommandLineRunner {
         vendorRepository.save(vendor3);
         
         System.out.println("Vendor Data Loaded = " + vendorRepository.count() );
+    }
+    
+    private void loadAgents() {
+        BsoDocument bso = new BsoDocument();
+        bso.setNumber("054696");
+        bso.setSeries("6108");
+        bso.setStatus(BsoStatus.NEW);
+        bso.setType("40");
+        
+        Agent agent1 = new Agent();
+        agent1.setCode(Long.valueOf(1588426));
+        agent1.setFirstName("Светлана");
+        agent1.setLastName("Новикова");
+        agent1.setLnr(Long.valueOf(1588426));
+        agent1.setMiddleName("Владимировна");
+        agent1.setSkk(Long.valueOf(16207320));
+        agent1.addBso(bso);
+        
+        bso.setAgent(agent1);
+        agentRepository.save(agent1);
+        
+        System.out.println("Agent Data Loaded = " + agentRepository.count());
     }
 }
