@@ -1,21 +1,24 @@
 package com.wojnarowicz.sfg.gw.service.impl;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wojnarowicz.sfg.gw.api.controller.HeaderConstants;
-import com.wojnarowicz.sfg.gw.api.model.ResponseRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
+import com.wojnarowicz.sfg.gw.adapter.KiasProcessingAdapter;
+import com.wojnarowicz.sfg.gw.adapter.KiasProcessingStrategy;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 import com.wojnarowicz.sfg.gw.domain.ESBHeader;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 import com.wojnarowicz.sfg.gw.repository.KiasRepository;
 import com.wojnarowicz.sfg.gw.service.ESBService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ESBServiceImpl implements ESBService {
 
     private KiasRepository kiasRepository;
@@ -26,28 +29,22 @@ public class ESBServiceImpl implements ESBService {
     }
 
     @Override
-    public ResponseRootDTO process(Map<String, String> headerMap, KiasRequestDTO requestData) {
-        
-        ESBHeader esbHeader = new ESBHeader();
-        esbHeader.setJmsCorrelationId(UUID.fromString(headerMap.get(HeaderConstants.JMSCorrelationID.name().toLowerCase())));
-        esbHeader.setEventCode(headerMap.get(HeaderConstants.EventCode.name()));
-        esbHeader.setJmsMessageID(UUID.fromString(headerMap.get(HeaderConstants.JMSMessageID.name().toLowerCase())));
-        esbHeader.setJMSPriority(Integer.valueOf(headerMap.get(HeaderConstants.JMSPriority.name())));
-        esbHeader.setMessageType(headerMap.get(HeaderConstants.MessageType.name()));
-        esbHeader.setOrginator(headerMap.get(HeaderConstants.Originator.name()));
-        esbHeader.setRecipient(headerMap.get(HeaderConstants.Recipient.name()));
-        
-        KiasExpectedPayment kiasExpectedPayment = new KiasExpectedPayment();
-        kiasExpectedPayment.setBcPublicId(requestData.getExpectedPaymentId());
-        kiasExpectedPayment.addEsbHeader(esbHeader);
-        
-        KiasExpectedPayment savedKiasExpectedPayment = kiasRepository.save(kiasExpectedPayment);
-        
-        return null; //
+    public ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestData) {
+        return null;
     }
 
     @Override
-    public void processSapRequest(SapRequestDTO sapRequestData) {
+    public ESBResponseRootDTO processKiasRequest(Map<String, String> headerMap, KiasRootDTO kiasRootDTO) {
+        log.info("processKiasRequest");
+
+        KiasProcessingAdapter processingAdapter = new KiasProcessingAdapter(kiasRepository);
+        ESBHeader esbHeader = processingAdapter.processHeader(headerMap);
         
+        KiasExpectedPayment kiasExpectedPayment = processingAdapter.processBody(kiasRootDTO);
+
+        KiasProcessingStrategy strategy = processingAdapter.getStrategyFor(esbHeader.getEventCode());
+        ESBResponseRootDTO response = processingAdapter.process(esbHeader, kiasExpectedPayment, strategy);
+        
+        return response;
     }
 }

@@ -103,12 +103,20 @@ public class DataLoader implements CommandLineRunner {
     }
     
     private void loadAgents() {
-        BsoDocument bso = new BsoDocument();
-        bso.setNumber("054696");
-        bso.setSeries("6108");
-        bso.setStatus(BsoStatus.NEW);
-        bso.setType("40");
+        BsoDocument bso1 = new BsoDocument();
+        //bso1.setId(1L);
+        bso1.setNumber("050001");
+        bso1.setSeries("6100");
+        bso1.setStatus(BsoStatus.NEW);
+        bso1.setType("40");
         
+        BsoDocument bso2 = new BsoDocument();
+        //bso2.setId(3L);
+        bso2.setNumber("050002");
+        bso2.setSeries("6100");
+        bso2.setStatus(BsoStatus.NEW);
+        bso2.setType("40");
+
         Agent agent1 = new Agent();
         agent1.setCode(Long.valueOf(1588426));
         agent1.setFirstName("Светлана");
@@ -116,9 +124,10 @@ public class DataLoader implements CommandLineRunner {
         agent1.setLnr(Long.valueOf(1588426));
         agent1.setMiddleName("Владимировна");
         agent1.setSkk(Long.valueOf(16207320));
-        agent1.addBso(bso);
+        agent1.addBso(bso1);
+        agent1.addBso(bso2);
         
-        bso.setAgent(agent1);
+        System.out.println(agent1.getBsoDocuments().size());
         agentRepository.save(agent1);
         
         System.out.println("Agent Data Loaded = " + agentRepository.count());

@@ -15,11 +15,14 @@ import lombok.Setter;
     "GeneralStatus",
     "Details"
 })
-public class ResponseSystemDTO {
+public class ESBResponseSystemDTO {
 
     @JsonProperty(value = "SysName")
     private String sysName;
 
     @JsonProperty(value = "GeneralStatus")
     private String generalStatus;
+    
+    @JsonProperty(value = "Details")
+    private ESBResponseDetailsDTO details;
 }

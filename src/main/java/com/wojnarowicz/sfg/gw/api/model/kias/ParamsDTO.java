@@ -6,6 +6,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
 "EXPPAYMENTNUM",
@@ -78,8 +83,11 @@ public class ParamsDTO {
     public List<PaymentConfirmationDTO> confirmations = null;
     
     @JsonProperty("AGRID")
-    public Object agrId;
+    public String agrId;
     
     @JsonProperty("PAYERKPP")
-    public Object payerKpp;
+    public String payerKpp;
+    
+    @JsonProperty("MATCHPAYMENTACCOUNT")
+    public KiasMatchPaymentAccountDTO matchPaymentAccount;
 }

@@ -1,26 +1,24 @@
 package com.wojnarowicz.sfg.gw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "Summary",
-    "Systems"
+    "System",
+    "Status"
 })
-public class ResponseNotificationDTO {
+public class ESBResponseSummaryDTO {
 
-    @JsonProperty(value = "Summary")
-    private ResponseSummaryDTO summary;
+    @JsonProperty(value = "System")
+    private String system;
 
-    @JsonProperty(value = "Systems")
-    private ResponseSystemsDTO systems;
+    @JsonProperty(value = "Status")
+    private String status;
 }

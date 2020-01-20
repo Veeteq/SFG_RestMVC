@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model;
+package com.wojnarowicz.sfg.gw.api.model.kias;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,14 +11,10 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "System",
-    "Status"
+"request"
 })
-public class ResponseSummaryDTO {
-
-    @JsonProperty(value = "System")
-    private String system;
-
-    @JsonProperty(value = "Status")
-    private String status;
+public class KiasDataDTO {
+    
+    @JsonProperty("request")
+    public KiasRequestDTO request;
 }

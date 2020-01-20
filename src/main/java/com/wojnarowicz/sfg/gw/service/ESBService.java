@@ -2,14 +2,13 @@ package com.wojnarowicz.sfg.gw.service;
 
 import java.util.Map;
 
-import com.wojnarowicz.sfg.gw.api.model.ResponseRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 
 public interface ESBService {
 
-    ResponseRootDTO process(Map<String, String> headerMap, KiasRequestDTO requestData);
+    ESBResponseRootDTO processKiasRequest(Map<String, String> headerMap, KiasRootDTO kiasRootDTO);
 
-    void processSapRequest(SapRequestDTO sapRequestData);
-
+    ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestData);
 }

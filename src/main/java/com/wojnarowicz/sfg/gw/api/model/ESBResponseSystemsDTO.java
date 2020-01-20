@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model.sap;
+package com.wojnarowicz.sfg.gw.api.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,12 @@ import lombok.Setter;
 @JsonPropertyOrder({
     "System"
 })
-public class ESBResponseSystems {
+public class ESBResponseSystemsDTO {
 
     @JsonProperty(value = "System")
-    private List<ESBResponseSystem> system = new ArrayList<ESBResponseSystem>();
+    private List<ESBResponseSystemDTO> system = new ArrayList<ESBResponseSystemDTO>();
 
-    public void addSystem(ESBResponseSystem _system) {
+    public void addSystem(ESBResponseSystemDTO _system) {
         this.system.add(_system);
     }
 }

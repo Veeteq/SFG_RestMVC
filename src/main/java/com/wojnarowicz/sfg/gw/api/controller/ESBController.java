@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wojnarowicz.sfg.gw.api.builder.ESBResponseBuilder;
-import com.wojnarowicz.sfg.gw.api.model.ResponseRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 import com.wojnarowicz.sfg.gw.service.ESBService;
 
@@ -34,11 +33,13 @@ public class ESBController {
     private final static String SUCCESS = "SUCCESS";
     private final static String COMPONENT = "GW_INPUT_ADAPTER";
     
-    private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    
-    private final static String ERROR = "ERROR";
-    private final static String EVENT_CODE_HEADER = "EventCode";
-    private final static String CORRELATION_ID_HEADER = "JMSCorrelationID";
+    /*
+     * private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+     * 
+     * private final static String ERROR = "ERROR"; private final static String
+     * EVENT_CODE_HEADER = "EventCode"; private final static String
+     * CORRELATION_ID_HEADER = "JMSCorrelationID";
+     */
 
     private final ESBService esbService;
     
@@ -49,19 +50,15 @@ public class ESBController {
 
     @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=KIAS")
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseRootDTO processKIASRequest(@RequestHeader Map<String, String> headerMap, @RequestBody KiasRequestDTO requestData) {
+    public ESBResponseRootDTO processKIASRequest(@RequestHeader Map<String, String> headerMap, @RequestBody KiasRootDTO kiasRootDTO) {
         log.info("processKIASRequest");
         
         headerMap.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
         
-        String eventCode = headerMap.get(HeaderConstants.EventCode.name().toLowerCase());
-        String recipient = headerMap.get(HeaderConstants.Recipient.name().toLowerCase());
-        String correlationID = headerMap.get(HeaderConstants.JMSCorrelationID.name());
-        
-        //return esbService.process(headerMap, requestData);
-        return new ResponseRootDTO();
+        ESBResponseRootDTO response = esbService.processKiasRequest(headerMap, kiasRootDTO);
+        return response;
     }
 
     @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=ESB")
@@ -92,7 +89,7 @@ public class ESBController {
         return response;
     }
 
-    private String asJsonString(Object object) {
+    public static String asJsonString(Object object) {
         try {
             return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model.sap;
+package com.wojnarowicz.sfg.gw.api.model.kias;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "Notification"
+"data"
 })
-public class ESBResponseRootDTO {
-    
-    @JsonProperty(value = "Notification")
-    private ESBResponseNotification notification;
+public class KiasRootDTO {
+
+    @JsonProperty("data")
+    public KiasDataDTO data;
 }

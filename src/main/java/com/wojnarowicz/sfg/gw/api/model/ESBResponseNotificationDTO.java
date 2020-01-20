@@ -1,7 +1,5 @@
 package com.wojnarowicz.sfg.gw.api.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -13,10 +11,14 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "System"
+    "Summary",
+    "Systems"
 })
-public class ResponseSystemsDTO {
+public class ESBResponseNotificationDTO {
 
-    @JsonProperty(value = "System")
-    private List<ResponseSystemDTO> systems;
+    @JsonProperty(value = "Summary")
+    private ESBResponseSummaryDTO summary;
+
+    @JsonProperty(value = "Systems")
+    private ESBResponseSystemsDTO systems;
 }

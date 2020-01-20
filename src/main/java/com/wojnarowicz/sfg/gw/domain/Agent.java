@@ -1,8 +1,8 @@
 package com.wojnarowicz.sfg.gw.domain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
@@ -45,8 +45,8 @@ public class Agent extends BaseEntity {
     @Column(name="LAST_NAME")
     private String lastName;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="agent")
-    private Set<BsoDocument> bsoDocuments = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy="agent")
+    private List<BsoDocument> bsoDocuments = new ArrayList<>();
     
     public void addBso(BsoDocument bsoDocument) {
         bsoDocument.setAgent(this);

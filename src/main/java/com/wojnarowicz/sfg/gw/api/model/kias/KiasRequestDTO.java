@@ -9,10 +9,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({
 "params",
-"EXPPAYMENTID"
+"EXPPAYMENTID",
+"TRANSACTIONID"
 })
 public class KiasRequestDTO {
 
@@ -21,4 +22,7 @@ public class KiasRequestDTO {
     
     @JsonProperty("EXPPAYMENTID")
     private String expectedPaymentId;
+    
+    @JsonProperty("TRANSACTIONID")
+    private String transactionId;
 }

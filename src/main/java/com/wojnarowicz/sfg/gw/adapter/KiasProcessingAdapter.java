@@ -1,59 +1,88 @@
 package com.wojnarowicz.sfg.gw.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-import com.wojnarowicz.sfg.gw.api.mapper.KiasRequestMapper;
-import com.wojnarowicz.sfg.gw.api.mapper.KiasRequestMapperImpl;
-import com.wojnarowicz.sfg.gw.api.model.ResponseNotificationDTO;
-import com.wojnarowicz.sfg.gw.api.model.ResponseRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.ResponseSummaryDTO;
-import com.wojnarowicz.sfg.gw.api.model.ResponseSystemDTO;
-import com.wojnarowicz.sfg.gw.api.model.ResponseSystemsDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.wojnarowicz.sfg.gw.api.controller.HeaderConstants;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
-import com.wojnarowicz.sfg.gw.domain.KiasRequestData;
+import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
+import com.wojnarowicz.sfg.gw.domain.ESBHeader;
+import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
+import com.wojnarowicz.sfg.gw.mapper.KiasMapper;
+import com.wojnarowicz.sfg.gw.repository.KiasRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class KiasProcessingAdapter {
 
-    private final String eventCode;
+    private final KiasRepository kiasRepository;
     
-    public KiasProcessingAdapter(String eventCode) {
-        this.eventCode = eventCode;
+    @Autowired
+    public KiasProcessingAdapter(KiasRepository kiasRepository) {
+        this.kiasRepository = kiasRepository;
     }
 
-    
-    public KiasRequestData process(KiasRequestDTO requestData) {
-        if(eventCode.equals("ExpectedPayCreate")) {
-            KiasRequestMapper kiasRequestMapper = new KiasRequestMapperImpl(); 
-            
-            return kiasRequestMapper.requestDataDTOToRequestData(requestData);            
+    public ESBHeader processHeader(Map<String, String> headerMap) {
+        log.info("processHeader");
+        ESBHeader esbHeader = new ESBHeader();
+        
+        esbHeader.setJmsCorrelationId(UUID.fromString(headerMap.get(HeaderConstants.JMSCorrelationID.name().toLowerCase())));
+        esbHeader.setEventCode(headerMap.get(HeaderConstants.EventCode.name().toLowerCase()));
+        //esbHeader.setJmsMessageID(UUID.fromString(headerMap.get(HeaderConstants.JMSMessageID.name().toLowerCase())));
+        esbHeader.setJMSPriority(Integer.valueOf(headerMap.get(HeaderConstants.JMSPriority.name().toLowerCase())));
+        esbHeader.setMessageType(headerMap.get(HeaderConstants.MessageType.name().toLowerCase()));
+        esbHeader.setOrginator(headerMap.get(HeaderConstants.Originator.name().toLowerCase()));
+        esbHeader.setRecipient(headerMap.get(HeaderConstants.Recipient.name().toLowerCase()));
+        
+        //System.out.println(ESBController.asJsonString(esbHeader));
+        return esbHeader;
+    }
+
+
+    public KiasExpectedPayment processBody(KiasRootDTO kiasRootDTO) {
+        log.info("processBody");
+        
+        KiasRequestDTO kiasRequestDTO = kiasRootDTO.getData().getRequest();
+        
+        KiasExpectedPayment kiasExpectedPayment = KiasMapper.INSTANCE.kiasParamsDTOToKias(kiasRequestDTO.getParams());
+        kiasExpectedPayment.setBcPublicId(kiasRequestDTO.getExpectedPaymentId());
+        
+        //System.out.println(ESBController.asJsonString(kiasRootDTO));
+        //System.out.println(ESBController.asJsonString(kiasExpectedPayment));
+        
+        return kiasExpectedPayment;
+    }
+
+
+    public KiasProcessingStrategy getStrategyFor(String eventCode) {
+        log.info("getStrategyFor");
+        
+        switch(eventCode) {
+        case("ExpectedPayCreate") :
+            return new KiasExpectedPayCreateStrategy(); 
+        default:
+            System.out.println("Brak metody");
+            return null;
         }
-        return null;
     }
 
-    
-    public ResponseRootDTO getResponse() {
-        ResponseRootDTO response = new ResponseRootDTO();
+
+    public ESBResponseRootDTO process(ESBHeader esbHeader, KiasExpectedPayment kiasExpectedPayment, KiasProcessingStrategy processingStrategy) {
+        log.info("process");
         
-        ResponseNotificationDTO notification = new ResponseNotificationDTO();
+        processingStrategy.setKiasRepository(kiasRepository);
+
+        Optional<KiasExpectedPayment> optional = kiasRepository.findById(kiasExpectedPayment.getBcPublicId());
+        if(optional.isPresent()) {
+            kiasExpectedPayment = optional.get();
+        } 
+        kiasExpectedPayment.addEsbHeader(esbHeader);
         
-        ResponseSummaryDTO summary = new ResponseSummaryDTO();
-        summary.setSystem("KIAS");
-        summary.setStatus("SUCCESS");
-        notification.setSummary(summary);
-        
-        ResponseSystemsDTO systems = new ResponseSystemsDTO();
-        List<ResponseSystemDTO> systemsList = new ArrayList<ResponseSystemDTO>();
-        
-        ResponseSystemDTO system = new ResponseSystemDTO();
-        system.setGeneralStatus("SUCCESS");
-        system.setSysName("KIAS");
-        systemsList.add(system );
-        systems.setSystems(systemsList);
-        notification.setSystems(systems);
-        
-        response.setNotification(notification);
-        
-        return response;
+        return processingStrategy.process(kiasExpectedPayment);
     }
 }

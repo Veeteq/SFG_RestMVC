@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model.sap;
+package com.wojnarowicz.sfg.gw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,7 @@ import lombok.Setter;
     "ExtendedDetails",
     "Status"
 })
-public class ESBResponseDetail {
+public class ESBResponseDetailDTO {
 
     @JsonProperty(value = "Component")
     private String component;
@@ -25,7 +25,7 @@ public class ESBResponseDetail {
     private String dateTime;
 
     @JsonProperty(value = "ExtendedDetails")
-    private ESBResponseExtendedDetails extendedDetails;
+    private ESBResponseExtendedDetailsDTO extendedDetails;
 
     @JsonProperty(value = "Status")
     private String status;

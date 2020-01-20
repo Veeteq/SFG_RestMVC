@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model.sap;
+package com.wojnarowicz.sfg.gw.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +15,7 @@ import lombok.Setter;
     "Description",
     "Message"
 })
-public class ESBResponseExtendedDetail {
+public class ESBResponseExtendedDetailDTO {
     @JsonProperty(value = "Code")
     private String code;
 

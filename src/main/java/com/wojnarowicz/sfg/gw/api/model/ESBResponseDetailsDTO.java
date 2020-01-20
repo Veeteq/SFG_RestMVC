@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.model.sap;
+package com.wojnarowicz.sfg.gw.api.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,12 @@ import lombok.Setter;
 @JsonPropertyOrder({
     "Detail"
 })
-public class ESBResponseDetails {
+public class ESBResponseDetailsDTO {
 
     @JsonProperty(value = "Detail")
-    private List<ESBResponseDetail> detail = new ArrayList<ESBResponseDetail>();
+    private List<ESBResponseDetailDTO> detail = new ArrayList<ESBResponseDetailDTO>();
 
-    public void addDetail(ESBResponseDetail _detail) {
+    public void addDetail(ESBResponseDetailDTO _detail) {
         this.detail.add(_detail);
     }
 }

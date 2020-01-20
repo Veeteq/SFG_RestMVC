@@ -2,12 +2,16 @@ package com.wojnarowicz.sfg.gw.domain;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +23,8 @@ import lombok.Setter;
 public class ESBHeader {
 
     @Id
-    @Column(name = "jms_correlation_id")
+    @Type(type="uuid-char")
+    @Column(name = "jms_correlation_id", columnDefinition = "uuid", nullable = false, updatable = false)
     private UUID jmsCorrelationId;
     
     @Column(name = "jms_message_id")
@@ -40,7 +45,7 @@ public class ESBHeader {
     @Column(name = "recipient")
     private String recipient;
     
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "kias_expected_payment_id", nullable=false)
     private KiasExpectedPayment kiasExpectedPayment;
 }

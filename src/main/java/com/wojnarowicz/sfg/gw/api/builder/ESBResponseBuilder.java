@@ -1,14 +1,14 @@
 package com.wojnarowicz.sfg.gw.api.builder;
 
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseDetail;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseDetails;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseExtendedDetail;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseExtendedDetails;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseNotification;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseSummary;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseSystem;
-import com.wojnarowicz.sfg.gw.api.model.sap.ESBResponseSystems;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseDetailDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseDetailsDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseExtendedDetailDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseExtendedDetailsDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseNotificationDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseSummaryDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseSystemDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseSystemsDTO;
 
 public class ESBResponseBuilder {
 
@@ -17,13 +17,13 @@ public class ESBResponseBuilder {
     }
 
     public static class Builder {
-        private ESBResponseSummary summary = new ESBResponseSummary();
-        private ESBResponseSystems systems = new ESBResponseSystems();
-        private ESBResponseDetails details = new ESBResponseDetails();
-        private ESBResponseExtendedDetails extendedDetails = new ESBResponseExtendedDetails();
+        private ESBResponseSummaryDTO summary = new ESBResponseSummaryDTO();
+        private ESBResponseSystemsDTO systems = new ESBResponseSystemsDTO();
+        private ESBResponseDetailsDTO details = new ESBResponseDetailsDTO();
+        private ESBResponseExtendedDetailsDTO extendedDetails = new ESBResponseExtendedDetailsDTO();
         
         public Builder withSummary(String status, String system) {
-            ESBResponseSummary summary = new ESBResponseSummary();
+            ESBResponseSummaryDTO summary = new ESBResponseSummaryDTO();
             summary.setStatus(status);
             summary.setSystem(system);
             this.summary = summary;
@@ -31,8 +31,8 @@ public class ESBResponseBuilder {
         }
 
         public Builder withSystem(String status, String sysName) {
-            ESBResponseSystem system = new ESBResponseSystem();
-            system.setDetails(new ESBResponseDetails());
+            ESBResponseSystemDTO system = new ESBResponseSystemDTO();
+            system.setDetails(new ESBResponseDetailsDTO());
             system.setGeneralStatus(status);
             system.setSysName(sysName);
             this.systems.addSystem(system);
@@ -40,7 +40,7 @@ public class ESBResponseBuilder {
         }
 
         public Builder withDetails(String correlationID, String currDate, String component, String status) {
-            ESBResponseDetail detail = new ESBResponseDetail();
+            ESBResponseDetailDTO detail = new ESBResponseDetailDTO();
             detail.setComponent(component);
             detail.setDateTime(currDate);
             detail.setStatus(status);
@@ -50,7 +50,7 @@ public class ESBResponseBuilder {
         }
 
         public Builder withExtendedDetails(String code, String description, String message) {
-            ESBResponseExtendedDetail extendedDetail = new ESBResponseExtendedDetail();
+            ESBResponseExtendedDetailDTO extendedDetail = new ESBResponseExtendedDetailDTO();
             extendedDetail.setCode(code);
             extendedDetail.setDescription(description);
             extendedDetail.setMessage(message);
@@ -62,7 +62,7 @@ public class ESBResponseBuilder {
         public ESBResponseRootDTO build() {
             ESBResponseRootDTO response = new ESBResponseRootDTO();
 
-            ESBResponseNotification notification = new ESBResponseNotification();
+            ESBResponseNotificationDTO notification = new ESBResponseNotificationDTO();
             notification.setSummary(this.summary);
             notification.setSystems(this.systems);
             response.setNotification(notification);

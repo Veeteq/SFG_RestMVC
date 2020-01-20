@@ -6,7 +6,6 @@ import com.wojnarowicz.sfg.gw.api.model.bso.BsoResponseBusinessData;
 import com.wojnarowicz.sfg.gw.api.model.bso.BsoResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.bso.BsoResponseTechData;
 import com.wojnarowicz.sfg.gw.repository.AgentRepository;
-import com.wojnarowicz.sfg.gw.repository.BsoIssuanceRepository;
 import com.wojnarowicz.sfg.gw.repository.BsoRepository;
 import com.wojnarowicz.sfg.gw.repository.ContractRepository;
 
@@ -14,7 +13,6 @@ public abstract class BsoProcessingAbstractStrategy implements BsoProcessingStra
 
     protected AgentRepository agentRepository;
     protected BsoRepository bsoRepository;
-    protected BsoIssuanceRepository bsoIssuanceRepository; 
     protected ContractRepository contractRepository;
         
     protected UUID actionId;
@@ -26,10 +24,6 @@ public abstract class BsoProcessingAbstractStrategy implements BsoProcessingStra
 
     public void setBsoRepository(BsoRepository bsoRepository) {
         this.bsoRepository = bsoRepository;
-    }
-
-    public void setBsoIssuanceRepository(BsoIssuanceRepository bsoIssuanceRepository) {
-        this.bsoIssuanceRepository = bsoIssuanceRepository;
     }
 
     public void setContractRepository(ContractRepository contractRepository) {

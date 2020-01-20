@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.service;
+package com.wojnarowicz.sfg.gw.service.impl;
 
 import java.util.List;
 
@@ -13,25 +13,22 @@ import com.wojnarowicz.sfg.gw.api.model.bso.BsoRootDTO;
 import com.wojnarowicz.sfg.gw.domain.Agent;
 import com.wojnarowicz.sfg.gw.domain.BsoDocument;
 import com.wojnarowicz.sfg.gw.repository.AgentRepository;
-import com.wojnarowicz.sfg.gw.repository.BsoIssuanceRepository;
 import com.wojnarowicz.sfg.gw.repository.BsoRepository;
 import com.wojnarowicz.sfg.gw.repository.ContractRepository;
+import com.wojnarowicz.sfg.gw.service.BSOService;
 
 @Service
 public class BSOServiceImpl implements BSOService {
 
     private final AgentRepository agentRepository;
-    private final BsoIssuanceRepository bsoIssuanceRepository;
     private final BsoRepository bsoRepository;
     private final ContractRepository contractRepository;
 
     @Autowired
     public BSOServiceImpl(AgentRepository agentRepository, 
                       BsoRepository bsoRepository, 
-                      BsoIssuanceRepository bsoIssuanceRepository,
                       ContractRepository contractRepository) {
         this.agentRepository = agentRepository;
-        this.bsoIssuanceRepository = bsoIssuanceRepository;
         this.bsoRepository = bsoRepository;
         this.contractRepository = contractRepository;
     }
@@ -63,7 +60,7 @@ public class BSOServiceImpl implements BSOService {
     @Override
     public BsoResponseRootDTO processUpdateRequest(BsoRootDTO bsoRootDTO) {
         
-        BsoProcessingAdapter processingAdapter = new BsoProcessingAdapter(agentRepository, bsoRepository, bsoIssuanceRepository, contractRepository);
+        BsoProcessingAdapter processingAdapter = new BsoProcessingAdapter(agentRepository, bsoRepository, contractRepository);
         BsoResponseRootDTO response = processingAdapter.process(bsoRootDTO, new BsoProcessingUpdateStrategy());
 
         return response;

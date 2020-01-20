@@ -11,7 +11,7 @@ import com.wojnarowicz.sfg.gw.domain.BsoStatus;
 
 public class BsoRequestValidator {
 
-    public static ValidationResult validateRequest(Optional<Agent> agent, List<BsoDocument> bsoList, BsoStatus bsoStatus, LocalDateTime checkDate) {
+    public static ValidationResult validateRequest(Optional<Agent> agent, Optional<BsoDocument> bsoDocument, BsoStatus bsoStatus, LocalDateTime checkDate) {
         List<ValidationRule> rules = new ArrayList<>();
         rules.add(new ValidationForAgent());
         rules.add(new ValidationForBso());
@@ -20,7 +20,7 @@ public class BsoRequestValidator {
         rules.add(new ValidationForBsoStatus());        
         
         for (ValidationRule rule : rules){
-            rule.validate(agent, bsoList, bsoStatus, checkDate);
+            rule.validate(agent, bsoDocument, bsoStatus, checkDate);
         }
         
         return ValidationResult.ok();
