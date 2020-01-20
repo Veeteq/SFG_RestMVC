@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wojnarowicz.sfg.gw.api.builder.ESBResponseBuilder;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
+import com.wojnarowicz.sfg.gw.builder.ESBResponseBuilder;
 import com.wojnarowicz.sfg.gw.service.ESBService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +89,35 @@ public class ESBController {
         return response;
     }
 
+    @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=BLA")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String processBLARequest(@RequestHeader Map<String, String> headerMap) {
+        log.info("processBLARequest");
+
+        headerMap.forEach((key, value) -> {
+            log.info(String.format("Header '%s' = %s", key, value));
+        }); 
+
+return "{\"Notification\": {" + 
+		"   \"Summary\":    {" + 
+		"      \"Status\": \"SUCCESS\"," + 
+		"      \"System\": \"GWBC\"" + 
+		"   },\r\n" + 
+		"   \"Systems\": {\"System\": [   {" + 
+		"      \"Details\": {\"Detail\": [      {" + 
+		"         \"Component\": \"KIAS_INPUT_ADAPTER\"," + 
+		"         \"DateTime\": \"2020-01-20T16:13:43.940Z\"," + 
+		"         \"EntityId\": \"200120201609\"," + 
+		"         \"Status\": \"SUCCESS\"" + 
+		"      }]}," + 
+		"      \"GeneralStatus\": \"SUCCESS\"," + 
+		"      \"SysName\": \"GWBC\"" + 
+		"   }]}" + 
+		"}}";
+ 
+         
+    }
+    
     public static String asJsonString(Object object) {
         try {
             return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);

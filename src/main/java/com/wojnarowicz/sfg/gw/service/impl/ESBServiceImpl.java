@@ -11,6 +11,7 @@ import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 import com.wojnarowicz.sfg.gw.domain.ESBHeader;
+import com.wojnarowicz.sfg.gw.domain.GWKiasPaymentStatus;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 import com.wojnarowicz.sfg.gw.repository.KiasRepository;
 import com.wojnarowicz.sfg.gw.service.ESBService;
@@ -47,4 +48,13 @@ public class ESBServiceImpl implements ESBService {
         
         return response;
     }
+
+	@Override
+	public void processKiasMatchPayment(String expectedPaymentId) {
+		log.info("processKiasMatchPayment");
+		
+		KiasExpectedPayment expectedPayment = kiasRepository.findById(expectedPaymentId).orElse(null);
+		expectedPayment.setPaymentStatus(GWKiasPaymentStatus.MATCHED);
+		kiasRepository.save(expectedPayment);
+	}
 }

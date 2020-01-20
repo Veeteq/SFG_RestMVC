@@ -1,91 +1,63 @@
 package com.wojnarowicz.sfg.gw.batch;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import com.wojnarowicz.sfg.gw.api.controller.ESBController;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasDataDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasMatchPaymentAccountDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
+import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.kias.ParamsDTO;
-import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
+import com.wojnarowicz.sfg.gw.service.ESBService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class KiasBatchWriter implements ItemWriter<KiasExpectedPayment> {
+public class KiasBatchWriter implements ItemWriter<KiasRootDTO> {
 
-    DateTimeFormatter formatToKey = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
-    DateTimeFormatter formatToDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    
+	private static final String BC_URL = "http://localhost:8080/api/gw/adapter-bc";
+
+	@Autowired
+	private ESBService esbService;
+	
+	private RestTemplate restTemplate = new RestTemplate();
+	
+	
+	
     @Override
-    public void write(List<? extends KiasExpectedPayment> payments) throws Exception {
+    public void write(List<? extends KiasRootDTO> payments) throws Exception {
         payments.forEach(payment -> {
-            log.info(payment.getExpectedPaymentNum() + ", " +  payment.getBcPublicId());
-           
-            LocalDateTime currentDateTime = LocalDateTime.now();
+            log.info(ESBController.asJsonString(payment));
             
-            KiasMatchPaymentAccountDTO matchPaymentAccount = new KiasMatchPaymentAccountDTO();
-            matchPaymentAccount.setExpPaymentId(payment.getBcPublicId());
-            matchPaymentAccount.setTransactionDate(currentDateTime.format(formatToDate));
-            matchPaymentAccount.setPaidAmount(payment.getAmount().toString());
-            matchPaymentAccount.setPaidDocId("AAA");
-            matchPaymentAccount.setPaidDocNum("101");
-            matchPaymentAccount.setPaidDate(currentDateTime.format(formatToDate));
-            matchPaymentAccount.setPaidAmountTotal(payment.getAmount().toString());
-            matchPaymentAccount.setPayerFullName(payment.getPayerFullName());
-            matchPaymentAccount.setInn(payment.getPayerInn());
-            matchPaymentAccount.setComment("Перевод");
-            matchPaymentAccount.setCurrency("RUB");
-            matchPaymentAccount.setOrigPaidDocId("AAA");
-            matchPaymentAccount.setOrigPaidDocNum("101");
-            matchPaymentAccount.setOrigPaidDate(currentDateTime.format(formatToDate));
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("recipient", "BLA");
             
-            ParamsDTO params = new ParamsDTO();
-            params.setMatchPaymentAccount(matchPaymentAccount);
-
-            KiasRequestDTO request = new KiasRequestDTO();            
-            request.setTransactionId(currentDateTime.format(formatToKey));
-            request.setParams(params);
+            HttpEntity<String> requestEntity = new HttpEntity<>(ESBController.asJsonString(payment), headers); 
             
-            KiasDataDTO data = new KiasDataDTO();            
-            data.setRequest(request);
-
-            KiasRootDTO root = new KiasRootDTO();
-            root.setData(data);
+            ResponseEntity<ESBResponseRootDTO> responseEntity = restTemplate.exchange(BC_URL, HttpMethod.POST, requestEntity, ESBResponseRootDTO.class);
             
-            log.info(ESBController.asJsonString(root));
-        });
-        
-        payments.stream().map(payment -> {
-            System.out.println("Data Retreived for Expected Payments: " + payment.getBcPublicId());
-
-            KiasRootDTO root = new KiasRootDTO();
-            KiasDataDTO data = new KiasDataDTO();
-            KiasRequestDTO request = new KiasRequestDTO();
-
-            KiasMatchPaymentAccountDTO matchPaymentAccount = new KiasMatchPaymentAccountDTO();
-            matchPaymentAccount.setPaidAmount(payment.getAmount().toString());
-
-            ParamsDTO params = new ParamsDTO();
-            params.setMatchPaymentAccount(matchPaymentAccount);
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
-
-            String transactionId = LocalDateTime.now().format(formatter);        
-            request.setTransactionId(transactionId);
-            request.setParams(params);
-            data.setRequest(request);
-
-            root.setData(data);
-
-            return root;
+            HttpStatus statusCode = responseEntity.getStatusCode();
+            log.info("code is: " + statusCode);
+            
+            ESBResponseRootDTO body = responseEntity.getBody();
+            log.info(ESBController.asJsonString(body));
+            
+            if(body.getNotification().getSummary().getStatus().equals("SUCCESS")) {
+            	String expectedPaymentId = payment.getData().getRequest().getParams().getMatchPaymentAccount().getExpPaymentId();            	            
+            	log.info(expectedPaymentId);
+            	
+            	esbService.processKiasMatchPayment(expectedPaymentId);
+            }
         });
     }
 }

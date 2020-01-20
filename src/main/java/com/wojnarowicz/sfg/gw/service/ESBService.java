@@ -11,4 +11,6 @@ public interface ESBService {
     ESBResponseRootDTO processKiasRequest(Map<String, String> headerMap, KiasRootDTO kiasRootDTO);
 
     ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestData);
+
+	void processKiasMatchPayment(String expectedPaymentId);
 }

@@ -2,6 +2,7 @@ package com.wojnarowicz.sfg.other;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,5 +23,6 @@ class DateConverterTest {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
         
         System.out.println(formatter.format(localDate));
+        System.out.println(UUID.randomUUID().toString());
     }
 }

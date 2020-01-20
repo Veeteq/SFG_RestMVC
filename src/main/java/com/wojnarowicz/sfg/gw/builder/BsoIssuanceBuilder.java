@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.api.builder;
+package com.wojnarowicz.sfg.gw.builder;
 
 import com.wojnarowicz.sfg.gw.domain.Agent;
 import com.wojnarowicz.sfg.gw.domain.BsoDocument;

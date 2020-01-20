@@ -1,7 +1,7 @@
 package com.wojnarowicz.sfg.gw.adapter;
 
-import com.wojnarowicz.sfg.gw.api.builder.ESBResponseBuilder;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.builder.ESBResponseBuilder;
 import com.wojnarowicz.sfg.gw.repository.KiasRepository;
 
 public abstract class KiasProcessingAbstractStrategy implements KiasProcessingStrategy {

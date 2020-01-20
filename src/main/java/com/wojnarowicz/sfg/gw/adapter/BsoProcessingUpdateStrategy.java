@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.wojnarowicz.sfg.gw.api.builder.BsoIssuanceBuilder;
 import com.wojnarowicz.sfg.gw.api.model.bso.AgentDTO;
 import com.wojnarowicz.sfg.gw.api.model.bso.BsoDocumentDTO;
 import com.wojnarowicz.sfg.gw.api.model.bso.BsoResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.bso.BsoRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.bso.ContractDTO;
+import com.wojnarowicz.sfg.gw.builder.BsoIssuanceBuilder;
 import com.wojnarowicz.sfg.gw.domain.Agent;
 import com.wojnarowicz.sfg.gw.domain.BsoDocument;
 import com.wojnarowicz.sfg.gw.domain.BsoIssuance;
