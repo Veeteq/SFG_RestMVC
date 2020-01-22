@@ -31,8 +31,8 @@ import lombok.Setter;
 public class KiasExpectedPayment {
 
     @Id
-    @Column(name = "expected_payment_id")
-    private String bcPublicId;
+    @Column(name = "public_id")
+    private String publicId;
 
     @OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "kiasExpectedPayment")
     @NotFound(action = NotFoundAction.IGNORE)
@@ -46,8 +46,14 @@ public class KiasExpectedPayment {
     
     @Column(name = "skk_code")
     private String skkCode;
+    
+    @Column(name = "currency")
     private String currency;
+    
+    @Column(name = "form_id")
     private String formId;
+    
+    @Column(name = "payment_method")
     private String methodPayId;
     private String comment;
     private BigDecimal amount;

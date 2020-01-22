@@ -25,7 +25,7 @@ public class KiasScheduler {
     @Autowired
     Job job;
     
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void myScheduler() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())

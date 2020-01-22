@@ -2,7 +2,6 @@ package com.wojnarowicz.sfg.restmvc.bootstrap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import com.wojnarowicz.sfg.gw.domain.Agent;
 import com.wojnarowicz.sfg.gw.domain.BsoDocument;
@@ -15,7 +14,6 @@ import com.wojnarowicz.sfg.restmvc.repositories.CategoryRepository;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
 import com.wojnarowicz.sfg.restmvc.repositories.VendorRepository;
 
-@Component
 public class DataLoader implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;

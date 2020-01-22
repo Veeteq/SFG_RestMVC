@@ -1,5 +1,8 @@
 package com.wojnarowicz.sfg.gw.builder;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseDetailDTO;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseDetailsDTO;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseExtendedDetailDTO;
@@ -39,10 +42,14 @@ public class ESBResponseBuilder {
             return this;
         }
 
-        public Builder withDetails(String correlationID, String currDate, String component, String status) {
+        public Builder withDetails(String entityId, String currDate, String component, String status) {
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            String now = ZonedDateTime.now().format(formatter);
+            
             ESBResponseDetailDTO detail = new ESBResponseDetailDTO();
             detail.setComponent(component);
-            detail.setDateTime(currDate);
+            detail.setEntityId(entityId);
+            detail.setDateTime(currDate == null ? now : currDate);
             detail.setStatus(status);
             this.details.addDetail(detail);
             this.systems.getSystem().iterator().next().setDetails(this.details);

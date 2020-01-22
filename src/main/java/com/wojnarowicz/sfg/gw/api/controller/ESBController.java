@@ -13,8 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.esb.ESBRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 import com.wojnarowicz.sfg.gw.builder.ESBResponseBuilder;
@@ -27,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(path = ESBController.BASE_URL)
 public class ESBController {
 
-    public static final String  BASE_URL = "/api/gw/adapter-bc";
+    public static final String  BASE_URL = "/api/gw";
     
     private final static String SYSTEM = "ESB";
     private final static String SUCCESS = "SUCCESS";
@@ -42,13 +48,22 @@ public class ESBController {
      */
 
     private final ESBService esbService;
+    private final ObjectMapper _mapper = initMapper();
     
     @Autowired
     public ESBController(ESBService esbService) {
         this.esbService = esbService;
     }
 
-    @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=KIAS")
+    private ObjectMapper initMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+        mapper.setSerializationInclusion(Include.NON_EMPTY);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return mapper;
+    }
+
+    @PostMapping(path="/adapter-bc", consumes="application/json", produces="application/json", headers = "recipient=KIAS")
     @ResponseStatus(code = HttpStatus.OK)
     public ESBResponseRootDTO processKIASRequest(@RequestHeader Map<String, String> headerMap, @RequestBody KiasRootDTO kiasRootDTO) {
         log.info("processKIASRequest");
@@ -61,10 +76,10 @@ public class ESBController {
         return response;
     }
 
-    @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=ESB")
+    @PostMapping(path="/adapter-bc",consumes="application/json", produces="application/json", headers = "recipient=ESB")
     @ResponseStatus(code = HttpStatus.OK)
-    public ESBResponseRootDTO processSAPRequest(@RequestHeader Map<String, String> headerMap, @RequestBody SapRequestDTO sapRequestData) {
-        log.info("processSAPRequest");
+    public ESBResponseRootDTO processESBBCRequest(@RequestHeader Map<String, String> headerMap, @RequestBody SapRequestDTO sapRequestData) throws JsonProcessingException {
+        log.info("process ESB BC Request");
 
         String correlationID = headerMap.get(HeaderConstants.JMSCorrelationID.name());
 
@@ -72,7 +87,7 @@ public class ESBController {
             log.info(String.format("Header '%s' = %s", key, value));
         }); 
 
-        log.info(asJsonString(sapRequestData));
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sapRequestData));
 
         esbService.processSapRequest(sapRequestData);
 
@@ -85,44 +100,26 @@ public class ESBController {
                 .withExtendedDetails("ESB-001", SUCCESS, "ИП начала обработку запроса")
                 .build();
         
-        log.info(asJsonString(response));
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
         return response;
     }
 
-    @PostMapping(consumes="application/json", produces="application/json", headers = "recipient=BLA")
+    @PostMapping(path="/adapter-pc",consumes="application/json", produces="application/json", headers = "recipient=ESB")
     @ResponseStatus(code = HttpStatus.OK)
-    public String processBLARequest(@RequestHeader Map<String, String> headerMap) {
-        log.info("processBLARequest");
+    public ESBResponseRootDTO processESBPCRequest(@RequestHeader Map<String, String> headerMap, @RequestBody ESBRootDTO esbRootDTO) throws JsonProcessingException {
+        log.info("process ESB PC Request");
 
         headerMap.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
-        }); 
+        });
 
-return "{\"Notification\": {" + 
-		"   \"Summary\":    {" + 
-		"      \"Status\": \"SUCCESS\"," + 
-		"      \"System\": \"GWBC\"" + 
-		"   },\r\n" + 
-		"   \"Systems\": {\"System\": [   {" + 
-		"      \"Details\": {\"Detail\": [      {" + 
-		"         \"Component\": \"KIAS_INPUT_ADAPTER\"," + 
-		"         \"DateTime\": \"2020-01-20T16:13:43.940Z\"," + 
-		"         \"EntityId\": \"200120201609\"," + 
-		"         \"Status\": \"SUCCESS\"" + 
-		"      }]}," + 
-		"      \"GeneralStatus\": \"SUCCESS\"," + 
-		"      \"SysName\": \"GWBC\"" + 
-		"   }]}" + 
-		"}}";
- 
-         
-    }
-    
-    public static String asJsonString(Object object) {
-        try {
-            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        //String uuid = headerMap.get(HeaderConstants.JMSCorrelationID.toString().toLowerCase());
+        String eventCode = headerMap.get(HeaderConstants.EventCode.toString().toLowerCase());
+        
+        ESBResponseRootDTO response = esbService.processPCRequest(eventCode, esbRootDTO);
+        
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(esbRootDTO));
+        
+        return response;
     }
 }

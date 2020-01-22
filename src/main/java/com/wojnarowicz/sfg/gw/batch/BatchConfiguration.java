@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 
 @Configuration
@@ -33,11 +32,11 @@ public class BatchConfiguration {
     private StepBuilderFactory stepBuilderFactory; 
     
     @Bean
-    Job job(ItemProcessor<KiasExpectedPayment, KiasRootDTO> itemProcessor,
-            ItemWriter<KiasRootDTO> itemWriter) throws Exception {
+    Job job(ItemProcessor<KiasExpectedPayment, KiasExpectedPayment> itemProcessor,
+            ItemWriter<KiasExpectedPayment> itemWriter) throws Exception {
 
         Step step = stepBuilderFactory.get("KIAS-Payment-Notification")
-                .<KiasExpectedPayment, KiasRootDTO> chunk(10)
+                .<KiasExpectedPayment, KiasExpectedPayment> chunk(10)
                 .reader(itemReader())
                 .processor(itemProcessor)
                 .writer(itemWriter)
@@ -54,8 +53,8 @@ public class BatchConfiguration {
         return new JpaPagingItemReaderBuilder<KiasExpectedPayment>()
                             .name("KiasExpectedPayment-Reader")                            
                             .entityManagerFactory(entityManagerFactory)
-                            .queryString("select p from KiasExpectedPayment p")
+                            .queryString("select p FROM KiasExpectedPayment p WHERE p.paymentStatus != 'REGISTERED'")
                             .pageSize(10)                            
                             .build();
-    }    
+    }
 }

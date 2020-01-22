@@ -3,6 +3,7 @@ package com.wojnarowicz.sfg.gw.service;
 import java.util.Map;
 
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
+import com.wojnarowicz.sfg.gw.api.model.esb.ESBRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
 
@@ -10,7 +11,9 @@ public interface ESBService {
 
     ESBResponseRootDTO processKiasRequest(Map<String, String> headerMap, KiasRootDTO kiasRootDTO);
 
-    ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestData);
+    ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestDTO);
 
 	void processKiasMatchPayment(String expectedPaymentId);
+
+    ESBResponseRootDTO processPCRequest(String eventCode, ESBRootDTO esbRootDTO);
 }

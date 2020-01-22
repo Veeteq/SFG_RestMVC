@@ -34,8 +34,6 @@ import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.exception.RestResponseEntityExceptionHandler;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
-
-import lombok.extern.slf4j.Slf4j;
 class CustomerControllerTest {
 
     private static final Long ID_1 = Long.valueOf(1);

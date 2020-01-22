@@ -27,7 +27,7 @@ public class ESBHeader {
     @Column(name = "jms_correlation_id", columnDefinition = "uuid", nullable = false, updatable = false)
     private UUID jmsCorrelationId;
     
-    @Column(name = "jms_message_id")
+    @Column(name = "jms_message_id", columnDefinition = "uuid", nullable = true)
     private UUID jmsMessageID;
     
     @Column(name = "jms_priority")

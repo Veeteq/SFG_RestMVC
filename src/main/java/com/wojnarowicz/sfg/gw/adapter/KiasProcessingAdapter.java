@@ -50,7 +50,7 @@ public class KiasProcessingAdapter {
         KiasRequestDTO kiasRequestDTO = kiasRootDTO.getData().getRequest();
         
         KiasExpectedPayment kiasExpectedPayment = KiasMapper.INSTANCE.kiasParamsDTOToKias(kiasRequestDTO.getParams());
-        kiasExpectedPayment.setBcPublicId(kiasRequestDTO.getExpectedPaymentId());
+        kiasExpectedPayment.setPublicId(kiasRequestDTO.getExpectedPaymentId());
         
         //System.out.println(ESBController.asJsonString(kiasRootDTO));
         //System.out.println(ESBController.asJsonString(kiasExpectedPayment));
@@ -77,7 +77,7 @@ public class KiasProcessingAdapter {
         
         processingStrategy.setKiasRepository(kiasRepository);
 
-        Optional<KiasExpectedPayment> optional = kiasRepository.findById(kiasExpectedPayment.getBcPublicId());
+        Optional<KiasExpectedPayment> optional = kiasRepository.findById(kiasExpectedPayment.getPublicId());
         if(optional.isPresent()) {
             kiasExpectedPayment = optional.get();
         } 
