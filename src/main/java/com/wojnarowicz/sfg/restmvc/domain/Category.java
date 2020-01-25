@@ -1,19 +1,33 @@
 package com.wojnarowicz.sfg.restmvc.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 @Entity
+@Table(name = "categories")
 @Data
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id    
+    private String id;
+    
+    @Column(name = "item_name")
     private String name;
+    
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "category")
+    private List<Item> items = new ArrayList<>();
 
+    public void addToItems(Item item) {
+    	item.setCategory(this);
+    	this.items.add(item);
+    }
 }

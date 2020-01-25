@@ -1,5 +1,8 @@
 package com.wojnarowicz.sfg.restmvc.api.v1.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CategoryDTO {
-    private Long id;
+    private String id;
     private String name;
+    
+    private List<ItemDTO> items = new ArrayList<>();
 }

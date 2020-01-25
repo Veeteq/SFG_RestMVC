@@ -71,17 +71,20 @@ class CategoryControllerTest {
 
     @Test
     void testFindByName() throws Exception {
+    	String ID = "cat1";
+    	String NAME = "Fruits";
+    	
         CategoryDTO category1 = new CategoryDTO();
-        category1.setName("Fruits");
-        category1.setId(1L);
+        category1.setName(NAME);
+        category1.setId(ID);
         
         when(categoryService.findByName(anyString())).thenReturn(category1);
         
         mockMvc.perform(get("/api/v1/categories/Fruit")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name", equalTo("Fruits")))
-        .andExpect(jsonPath("$.id", equalTo(1)));
+        .andExpect(jsonPath("$.name", equalTo(NAME)))
+        .andExpect(jsonPath("$.id", equalTo(ID)));
     }
     
     @Test
