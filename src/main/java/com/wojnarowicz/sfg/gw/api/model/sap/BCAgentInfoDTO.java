@@ -16,7 +16,7 @@ import lombok.Setter;
 "AgentCode",
 "AgentRoles"
 })
-public class AgentInfoDTO {
+public class BCAgentInfoDTO {
     
     @JsonProperty("AgentCode")
     public String agentCode;

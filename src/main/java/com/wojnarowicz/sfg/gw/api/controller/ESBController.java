@@ -1,7 +1,5 @@
 package com.wojnarowicz.sfg.gw.api.controller;
 
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.esb.ESBRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
-import com.wojnarowicz.sfg.gw.builder.ESBResponseBuilder;
+import com.wojnarowicz.sfg.gw.api.model.sap.SapRootDTO;
 import com.wojnarowicz.sfg.gw.service.ESBService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,28 +31,16 @@ import lombok.extern.slf4j.Slf4j;
 public class ESBController {
 
     public static final String  BASE_URL = "/api/gw";
-    
-    private final static String SYSTEM = "ESB";
-    private final static String SUCCESS = "SUCCESS";
-    private final static String COMPONENT = "GW_INPUT_ADAPTER";
-    
-    /*
-     * private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-     * 
-     * private final static String ERROR = "ERROR"; private final static String
-     * EVENT_CODE_HEADER = "EventCode"; private final static String
-     * CORRELATION_ID_HEADER = "JMSCorrelationID";
-     */
-
+    private final static ObjectMapper _mapper = initMapper();
+        
     private final ESBService esbService;
-    private final ObjectMapper _mapper = initMapper();
     
     @Autowired
     public ESBController(ESBService esbService) {
         this.esbService = esbService;
     }
 
-    private ObjectMapper initMapper() {
+    private static ObjectMapper initMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
         mapper.setSerializationInclusion(Include.NON_EMPTY);
@@ -65,12 +50,14 @@ public class ESBController {
 
     @PostMapping(path="/adapter-bc", consumes="application/json", produces="application/json", headers = "recipient=KIAS")
     @ResponseStatus(code = HttpStatus.OK)
-    public ESBResponseRootDTO processKIASRequest(@RequestHeader Map<String, String> headerMap, @RequestBody KiasRootDTO kiasRootDTO) {
+    public ESBResponseRootDTO processKIASRequest(@RequestHeader Map<String, String> headerMap, @RequestBody KiasRootDTO kiasRootDTO) throws JsonProcessingException {
         log.info("processKIASRequest");
         
         headerMap.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
+        
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(kiasRootDTO));
         
         ESBResponseRootDTO response = esbService.processKiasRequest(headerMap, kiasRootDTO);
         return response;
@@ -78,36 +65,27 @@ public class ESBController {
 
     @PostMapping(path="/adapter-bc",consumes="application/json", produces="application/json", headers = "recipient=ESB")
     @ResponseStatus(code = HttpStatus.OK)
-    public ESBResponseRootDTO processESBBCRequest(@RequestHeader Map<String, String> headerMap, @RequestBody SapRequestDTO sapRequestData) throws JsonProcessingException {
+    public ESBResponseRootDTO processEsbBcRequest(@RequestHeader Map<String, String> headerMap, @RequestBody SapRootDTO sapRootDTO) throws JsonProcessingException {
         log.info("process ESB BC Request");
-
-        String correlationID = headerMap.get(HeaderConstants.JMSCorrelationID.name());
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sapRootDTO));
 
         headerMap.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         }); 
 
-        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sapRequestData));
-
-        esbService.processSapRequest(sapRequestData);
-
-        String currDate = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
+        String eventCode = headerMap.get(HeaderConstants.EventCode.toString().toLowerCase());
         
-        ESBResponseRootDTO response = ESBResponseBuilder.builder()
-                .withSummary(SUCCESS, SYSTEM)
-                .withSystem(SUCCESS, SYSTEM)
-                .withDetails(correlationID, currDate, COMPONENT, SUCCESS)     
-                .withExtendedDetails("ESB-001", SUCCESS, "ИП начала обработку запроса")
-                .build();
-        
+        ESBResponseRootDTO response = esbService.processEsbBcRequest(eventCode, sapRootDTO);
+
         log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
         return response;
     }
 
     @PostMapping(path="/adapter-pc",consumes="application/json", produces="application/json", headers = "recipient=ESB")
     @ResponseStatus(code = HttpStatus.OK)
-    public ESBResponseRootDTO processESBPCRequest(@RequestHeader Map<String, String> headerMap, @RequestBody ESBRootDTO esbRootDTO) throws JsonProcessingException {
+    public ESBResponseRootDTO processEsbPcRequest(@RequestHeader Map<String, String> headerMap, @RequestBody ESBRootDTO esbRootDTO) throws JsonProcessingException {
         log.info("process ESB PC Request");
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(esbRootDTO));
 
         headerMap.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
@@ -116,10 +94,9 @@ public class ESBController {
         //String uuid = headerMap.get(HeaderConstants.JMSCorrelationID.toString().toLowerCase());
         String eventCode = headerMap.get(HeaderConstants.EventCode.toString().toLowerCase());
         
-        ESBResponseRootDTO response = esbService.processPCRequest(eventCode, esbRootDTO);
+        ESBResponseRootDTO response = esbService.processEsbPcRequest(eventCode, esbRootDTO);
         
-        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(esbRootDTO));
-        
+        log.info(_mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
         return response;
     }
 }

@@ -23,21 +23,40 @@ public class KiasScheduler {
     JobLauncher jobLauncher;
     
     @Autowired
-    Job job;
+    Job kiasJob;
     
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Autowired
+    Job sapJob;
+    
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void myScheduler() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
         
         try {
-            JobExecution jobExecution = jobLauncher.run(job, jobParameters);
+            JobExecution jobExecution = jobLauncher.run(kiasJob, jobParameters);
             System.out.println("Job's status: " + jobExecution.getStatus());
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
             e.printStackTrace();
         }
         
-        System.out.println("Scheduler executed");
+        System.out.println("KIAS Scheduler executed");
+    }
+    
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void ESBScheduler() {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("time", System.currentTimeMillis())
+                .toJobParameters();
+        
+        try {
+            JobExecution jobExecution = jobLauncher.run(sapJob, jobParameters);
+            System.out.println("Job's status: " + jobExecution.getStatus());
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("SAP Scheduler executed");
     }
 }

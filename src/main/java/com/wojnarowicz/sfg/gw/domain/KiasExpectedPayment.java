@@ -34,7 +34,7 @@ public class KiasExpectedPayment {
     @Column(name = "public_id")
     private String publicId;
 
-    @OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "kiasExpectedPayment")
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "kiasExpectedPayment")
     @NotFound(action = NotFoundAction.IGNORE)
     private Set<ESBHeader> esbHeaders = new HashSet<ESBHeader>();
     

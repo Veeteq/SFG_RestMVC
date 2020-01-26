@@ -113,8 +113,8 @@ public class PCPolicyDTO {
     @JsonProperty("LiabilityStartDate")
     public String liabilityStartDate;
 
-    //@JsonProperty("Mvehicle")
-    //public Mvehicle mvehicle;
+    @JsonProperty("Mvehicle")
+    public PCMvehicleDTO mVehicle;
 
     @JsonProperty("Offering")
     public String offering;

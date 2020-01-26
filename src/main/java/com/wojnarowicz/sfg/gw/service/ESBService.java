@@ -5,15 +5,15 @@ import java.util.Map;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.esb.ESBRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
-import com.wojnarowicz.sfg.gw.api.model.sap.SapRequestDTO;
+import com.wojnarowicz.sfg.gw.api.model.sap.SapRootDTO;
 
 public interface ESBService {
 
     ESBResponseRootDTO processKiasRequest(Map<String, String> headerMap, KiasRootDTO kiasRootDTO);
 
-    ESBResponseRootDTO processSapRequest(SapRequestDTO sapRequestDTO);
+    ESBResponseRootDTO processEsbBcRequest(String eventCode, SapRootDTO sapRootDTO);
 
-	void processKiasMatchPayment(String expectedPaymentId);
+    ESBResponseRootDTO processEsbPcRequest(String eventCode, ESBRootDTO esbRootDTO);
 
-    ESBResponseRootDTO processPCRequest(String eventCode, ESBRootDTO esbRootDTO);
+    void processKiasMatchPayment(String expectedPaymentId);
 }

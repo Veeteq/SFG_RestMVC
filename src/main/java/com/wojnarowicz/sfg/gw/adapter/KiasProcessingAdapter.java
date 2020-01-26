@@ -39,7 +39,6 @@ public class KiasProcessingAdapter {
         esbHeader.setOrginator(headerMap.get(HeaderConstants.Originator.name().toLowerCase()));
         esbHeader.setRecipient(headerMap.get(HeaderConstants.Recipient.name().toLowerCase()));
         
-        //System.out.println(ESBController.asJsonString(esbHeader));
         return esbHeader;
     }
 
@@ -52,25 +51,12 @@ public class KiasProcessingAdapter {
         KiasExpectedPayment kiasExpectedPayment = KiasMapper.INSTANCE.kiasParamsDTOToKias(kiasRequestDTO.getParams());
         kiasExpectedPayment.setPublicId(kiasRequestDTO.getExpectedPaymentId());
         
+        
         //System.out.println(ESBController.asJsonString(kiasRootDTO));
         //System.out.println(ESBController.asJsonString(kiasExpectedPayment));
         
         return kiasExpectedPayment;
     }
-
-
-    public KiasProcessingStrategy getStrategyFor(String eventCode) {
-        log.info("getStrategyFor");
-        
-        switch(eventCode) {
-        case("ExpectedPayCreate") :
-            return new KiasExpectedPayCreateStrategy(); 
-        default:
-            System.out.println("Brak metody");
-            return null;
-        }
-    }
-
 
     public ESBResponseRootDTO process(ESBHeader esbHeader, KiasExpectedPayment kiasExpectedPayment, KiasProcessingStrategy processingStrategy) {
         log.info("process");

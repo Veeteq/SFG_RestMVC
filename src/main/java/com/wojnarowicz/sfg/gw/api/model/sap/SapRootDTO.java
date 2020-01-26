@@ -2,6 +2,7 @@ package com.wojnarowicz.sfg.gw.api.model.sap;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -32,60 +33,60 @@ import lombok.Setter;
     "StatementNumber",
     "TermNumber"
 })
-public class SapRequestDTO {
+public class SapRootDTO {
 
     @JsonProperty("AgentInfo")
-    public List<AgentInfoDTO> agentInfo = null;
+    private List<BCAgentInfoDTO> agents = null;
     
     @JsonProperty("Coverages")
-    public List<CoverageDTO> coverages = null;
+    private List<BCCoverageDTO> coverages = null;
     
     @JsonProperty("ExpectedPaymentDate")
-    public String expectedPaymentDate;
+    private String expectedPaymentDate;
     
     @JsonProperty("ExpectedPaymentPublicID")
-    public String expectedPaymentPublicID;
+    private String publicId;
     
     @JsonProperty("PaymentAmount")
-    public BigDecimal paymentAmount;
+    private BigDecimal paymentAmount;
     
     @JsonProperty("PaymentCurrency")
-    public String paymentCurrency;
+    private String paymentCurrency;
     
     @JsonProperty("PaymentDateOnAccountRGS")
-    public String paymentDateOnAccountRGS;
+    private String paymentDateOnAccountRGS;
     
     @JsonProperty("LastPaymentDate")
-    public String lastPaymentDate;
+    private String lastPaymentDate;
     
     @JsonProperty("YetPayInsurancePremium")
-    public BigDecimal yetPayInsurancePremium;
+    private BigDecimal yetPayInsurancePremium;
     
     @JsonProperty("PaymentStatus")
-    public Integer paymentStatus;
+    private Integer paymentStatus;
     
     @JsonProperty("TypeOfOperation")
-    public String typeOfOperation;
+    private String typeOfOperation;
     
     @JsonProperty("ProductCode")
-    public String productCode;
+    private String productCode;
     
     @JsonProperty("SubProductCode")
-    public String subProductCode;
+    private String subProductCode;
     
     @JsonProperty("DefaultBaseState")
-    public Integer defaultBaseState;
+    private Integer defaultBaseState;
     
     @JsonProperty("PCPublicID")
-    public String pCPublicID;
+    private String policyId;
     
     @JsonProperty("StatementDate")
-    public String statementDate;
+    private String statementDate;
     
     @JsonProperty("StatementNumber")
-    public String statementNumber;
+    private String statementNumber;
     
     @JsonProperty("TermNumber")
-    public Integer termNumber;
+    private Integer termNumber;
 }
 

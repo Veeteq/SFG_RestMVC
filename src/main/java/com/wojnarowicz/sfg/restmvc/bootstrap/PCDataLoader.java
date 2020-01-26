@@ -4,13 +4,11 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import com.wojnarowicz.sfg.gw.domain.PCContact;
 import com.wojnarowicz.sfg.gw.domain.PCPolicy;
 import com.wojnarowicz.sfg.gw.repository.PCPolicyRepository;
 
-@Component
 public class PCDataLoader implements CommandLineRunner {
 
     private final PCPolicyRepository pcPolicyRepository;

@@ -16,7 +16,7 @@ import lombok.Setter;
 "ChargeCurrency",
 "ChargeItemID"
 })
-public class CoverageDTO {
+public class BCCoverageDTO {
 
     @JsonProperty("ChargeAmount")
     public Float chargeAmount;
@@ -28,5 +28,5 @@ public class CoverageDTO {
     public String chargeCurrency;
     
     @JsonProperty("ChargeItemID")
-    public String chargeItemID;
+    public String chargeItemId;
 }

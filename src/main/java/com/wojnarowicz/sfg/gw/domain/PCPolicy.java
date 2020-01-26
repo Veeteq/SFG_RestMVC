@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -55,7 +56,7 @@ public class PCPolicy {
     public PCContact insured;
     
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "pc_owner_id")
+    @JoinColumn(name = "pc_owner_id", nullable = true)
     public PCContact owner;
         
     public BigDecimal insuredPremium;
@@ -74,7 +75,10 @@ public class PCPolicy {
     @Column(name="liability_end_date", columnDefinition="TIMESTAMP", nullable=true)
     public LocalDateTime liabilityEndDate;
 
-    //public Mvehicle mvehicle;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pc_vehicle_id")
+    public PCMvehicle mVehicle;
+    
     public String offering;    
     
     public String pledgedProperty;

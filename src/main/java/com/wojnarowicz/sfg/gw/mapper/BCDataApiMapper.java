@@ -8,6 +8,8 @@ import com.wojnarowicz.sfg.gw.api.model.kias.KiasMatchPaymentAccountDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRequestDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.ParamsDTO;
+import com.wojnarowicz.sfg.gw.api.model.sap.ActOfPerformanceDTO;
+import com.wojnarowicz.sfg.gw.domain.BCExpectedPayment;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 
 public class BCDataApiMapper {
@@ -49,5 +51,14 @@ public class BCDataApiMapper {
         root.setData(data);
         
         return root;
+    }
+
+
+    public ActOfPerformanceDTO mapActOfPerformance(BCExpectedPayment payment) {
+        ActOfPerformanceDTO request = new ActOfPerformanceDTO();
+        
+        request.setTotalAmount(payment.getPaymentAmount().toString());
+        
+        return request;
     }
 }
