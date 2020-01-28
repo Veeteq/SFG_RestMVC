@@ -1,6 +1,6 @@
 package com.wojnarowicz.sfg.restmvc.api.v1.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class BCExpectedPaymentMapperTest {
         sapRootDTO.setPaymentCurrency(paymentCurrency);
         
         // context
-        JpaContext jpaCtx = new JpaContext( null );
+        JpaContext jpaCtx = new JpaContext();
         BCExpectedPayment bcExpectedPayment = mapper.toBCExpectedPayment(sapRootDTO, jpaCtx);
         
         assertEquals(publicId, bcExpectedPayment.getPublicId());

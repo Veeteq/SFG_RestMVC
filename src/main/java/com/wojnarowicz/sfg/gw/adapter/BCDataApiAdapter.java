@@ -2,6 +2,7 @@ package com.wojnarowicz.sfg.gw.adapter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpEntity;
@@ -62,8 +63,8 @@ public class BCDataApiAdapter {
         return getBcDataApiResponse(url, eventCode, requestJson);        
     }
 
-    public ESBResponseRootDTO actOfPerformance(BCExpectedPayment payment) {
-        ActOfPerformanceDTO request = new BCDataApiMapper().mapActOfPerformance(payment);
+    public ESBResponseRootDTO actOfPerformance(List<? extends BCExpectedPayment> payments) {
+        ActOfPerformanceDTO request = new BCDataApiMapper().mapActOfPerformance(payments);
         
         String url = BC_URL + ACT_OF_PERFORMANCE_API;
         String eventCode = "ActOfPerformanceCreate";
@@ -118,7 +119,7 @@ public class BCDataApiAdapter {
     }
 
     public ValidationResult checkIfValid(ESBResponseRootDTO response) {
-        if(response.getNotification().getSummary().getStatus().equals("SUCCESS")) {
+        if(response.getNotification().getSummary().getStatus().equalsIgnoreCase("SUCCESS")) {
             return ValidationResult.ok();
         }
         return ValidationResult.fail("Validation failed");

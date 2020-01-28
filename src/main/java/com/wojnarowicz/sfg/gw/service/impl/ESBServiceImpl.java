@@ -1,5 +1,6 @@
 package com.wojnarowicz.sfg.gw.service.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import com.wojnarowicz.sfg.gw.domain.GWKiasPaymentStatus;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 import com.wojnarowicz.sfg.gw.domain.PCPolicy;
 import com.wojnarowicz.sfg.gw.mapper.PCPolicyMapper;
+import com.wojnarowicz.sfg.gw.repository.AgentRepository;
 import com.wojnarowicz.sfg.gw.repository.BCExpectedPaymentRepository;
 import com.wojnarowicz.sfg.gw.repository.KiasRepository;
 import com.wojnarowicz.sfg.gw.repository.PCPolicyRepository;
@@ -39,12 +41,14 @@ public class ESBServiceImpl implements ESBService {
     private final KiasRepository kiasRepository;
     private final PCPolicyRepository pcPolicyRepository;
     private final BCExpectedPaymentRepository bcExpectedPaymentRepository;
+    private final AgentRepository agentRepository;
     
     @Autowired
-    public ESBServiceImpl(KiasRepository kiasRepository, PCPolicyRepository pcPolicyRepository, BCExpectedPaymentRepository bcExpectedPaymentRepository) {
+    public ESBServiceImpl(KiasRepository kiasRepository, PCPolicyRepository pcPolicyRepository, BCExpectedPaymentRepository bcExpectedPaymentRepository, AgentRepository agentRepository) {
         this.kiasRepository = kiasRepository;
         this.pcPolicyRepository = pcPolicyRepository;
         this.bcExpectedPaymentRepository = bcExpectedPaymentRepository;
+        this.agentRepository = agentRepository;
     }
 
     @Override
@@ -75,10 +79,10 @@ public class ESBServiceImpl implements ESBService {
     }
 
 	@Override
-	public void processKiasMatchPayment(String expectedPaymentId) {
+	public void processKiasMatchPayment(KiasExpectedPayment sourceExpectedPayment) {
 		log.info("processKiasMatchPayment");
 		
-		KiasExpectedPayment expectedPayment = kiasRepository.findById(expectedPaymentId).orElse(null);
+		KiasExpectedPayment expectedPayment = kiasRepository.findById(sourceExpectedPayment.getPublicId()).orElse(null);
 		expectedPayment.setPaymentStatus(GWKiasPaymentStatus.MATCHED);
 		kiasRepository.save(expectedPayment);
 	}
@@ -87,10 +91,28 @@ public class ESBServiceImpl implements ESBService {
     public ESBResponseRootDTO processEsbBcRequest(String eventCode, SapRootDTO sapRootDTO) {
         log.info("processEsbBcRequest");
         
-        JpaContext ctx = new JpaContext(null);
+        JpaContext ctx = new JpaContext();
         BCExpectedPayment bcExpectedPayment = BCExpectedPaymentMapper.INSTANCE.toBCExpectedPayment(sapRootDTO, ctx);
         bcExpectedPayment.getCoverages().forEach(coverage -> coverage.setExpectedPayment(bcExpectedPayment));
         
+/*        
+        sapRootDTO.getAgents().stream().forEach(agent -> {
+            agent.getAgentRoles().forEach(role ->{
+                Agent savedAgent = agentRepository.findByCode(Long.valueOf(agent.getAgentCode())).orElse(null);
+
+                BCPaymentAgentKey key = new BCPaymentAgentKey();
+                key.setAgentCode(savedAgent.getCode());
+                key.setExpectedPaymentId(bcExpectedPayment.getPublicId());
+
+                BCPaymentAgent paymentAgent = new BCPaymentAgent();
+                paymentAgent.setKey(key);
+                paymentAgent.setAgent(savedAgent);
+                paymentAgent.setAgentRole(AgentRole.getByCode(role));
+                
+                bcExpectedPayment.addAgentRole(paymentAgent);
+            });
+        });
+*/        
         log.info(bcExpectedPayment.getPublicId());
         log.info(bcExpectedPayment.getPolicyId());
         log.info(bcExpectedPayment.getStatementNumber());
@@ -138,4 +160,16 @@ public class ESBServiceImpl implements ESBService {
 
 	    return response;
 	}
+
+    @Override
+    public void processActOfPerformance(List<? extends BCExpectedPayment> payments) {
+        payments.stream().forEach(payment -> {
+            Optional<BCExpectedPayment> optional = bcExpectedPaymentRepository.findById(payment.getPublicId());
+            if(optional.isPresent()) {
+                BCExpectedPayment expectedPayment = optional.get();
+                expectedPayment.setPaymentStatus(1);
+                bcExpectedPaymentRepository.save(expectedPayment);
+            }
+        });
+    }
 }

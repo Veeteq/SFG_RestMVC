@@ -2,6 +2,7 @@ package com.wojnarowicz.sfg.gw.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,16 +30,12 @@ public class BCExpectedPayment {
     @Column(name = "policy_id")
     private String policyId;
     
-    @ManyToMany(cascade = {
+    @OneToMany(cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE})
-    @JoinTable(name = "bc_expected_payments_agents",
-               joinColumns = @JoinColumn(name = "agent_id"),
-               inverseJoinColumns = @JoinColumn(name = "expected_payment_id", columnDefinition = "varchar"))
-    private List<Agent> agents = null;
+            CascadeType.REFRESH}, mappedBy = "expectedPayment")
+    private List<BCPaymentAgent> paymentAgents = new ArrayList<>();
     
     @OneToMany(mappedBy = "expectedPayment", cascade = {CascadeType.ALL})
-    //@JoinColumn(name="expected_payment_id", nullable=false)
     private List<BCCoverage> coverages = null;
     
     private LocalDate expectedPaymentDate;
@@ -61,4 +55,9 @@ public class BCExpectedPayment {
     private LocalDate statementDate;
     private String statementNumber;
     private Integer termNumber;
+    
+    public void addAgentRole(BCPaymentAgent paymentAgent) {
+        paymentAgent.setExpectedPayment(this);
+        this.paymentAgents.add(paymentAgent);
+    }
 }

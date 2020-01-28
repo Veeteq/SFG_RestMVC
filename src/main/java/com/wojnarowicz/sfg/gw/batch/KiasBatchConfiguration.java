@@ -71,7 +71,7 @@ public class KiasBatchConfiguration {
         return new JpaPagingItemReaderBuilder<KiasExpectedPayment>()
                             .name("KiasExpectedPayment-Reader")                            
                             .entityManagerFactory(entityManagerFactory)
-                            .queryString("select p FROM KiasExpectedPayment p WHERE p.paymentStatus = 'REGISTERED'")
+                            .queryString("select p FROM KiasExpectedPayment p WHERE p.paymentStatus != 'MATCHED'")
                             .pageSize(10)                            
                             .build();
     }
@@ -81,7 +81,7 @@ public class KiasBatchConfiguration {
         return new JpaPagingItemReaderBuilder<BCExpectedPayment>()
                             .name("SapExpectedPayment-Reader")                            
                             .entityManagerFactory(entityManagerFactory)
-                            .queryString("select p FROM BCExpectedPayment p WHERE p.publicId = 'bc:4002'")
+                            .queryString("select p FROM BCExpectedPayment p WHERE p.paymentStatus = 0")
                             .pageSize(10)                            
                             .build();
     }

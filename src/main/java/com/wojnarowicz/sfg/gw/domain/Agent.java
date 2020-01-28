@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -20,14 +19,12 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "agents")
-@AttributeOverride(name="id", column=@Column(name="agent_id"))
-@SequenceGenerator(name="default_seq", sequenceName="agent_seq", allocationSize=1)
-public class Agent extends BaseEntity {
+public class Agent {
 
-    private static final long serialVersionUID = 1L;
     private static final String DELIMITER = " ";
 
-    @Column(name="CODE")
+    @Id
+    @Column(name="agent_code")
     private Long code;
 
     @Column(name="LNR")

@@ -12,40 +12,34 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "ReportCreationDate",
-    "TotalAmount",
-    "ReportNumber",
-    "RetentionKv",
+    "Id",
+    "ActDate",
     "RefactNumber",
+    "AgentId",
     "AgrId",
-    "StartDate",
-    "EndDate",
-    "ActExternalId",
-    "Kv_Amt",
+    "RetentionKv",
     "Commissions"
 })
 public class ActOfPerformanceDTO {
 
-    @JsonProperty("ReportCreationDate")
-    private String reportCreationDate;
-    @JsonProperty("TotalAmount")
-    private String totalAmount;
-    @JsonProperty("ReportNumber")
-    private String reportNumber;
-    @JsonProperty("RetentionKv")
-    private Integer retentionKv;
+    @JsonProperty("Id")
+    private String id;
+    
+    @JsonProperty("ActDate")
+    private String actDate;
+    
     @JsonProperty("RefactNumber")
     private String refactNumber;
+    
+    @JsonProperty("AgentId")
+    private String agentId;
+
     @JsonProperty("AgrId")
     private String agrId;
-    @JsonProperty("StartDate")
-    private String startDate;
-    @JsonProperty("EndDate")
-    private String endDate;
-    @JsonProperty("ActExternalId")
-    private String actExternalId;
-    @JsonProperty("Kv_Amt")
-    private String kvAmt;
+    
+    @JsonProperty("RetentionKv")
+    private Integer retentionKv;
+    
     @JsonProperty("Commissions")
     private List<ActOfPerformanceCommissionDTO> commissions = null;
 }

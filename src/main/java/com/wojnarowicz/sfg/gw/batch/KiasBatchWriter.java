@@ -33,7 +33,7 @@ public class KiasBatchWriter implements ItemWriter<KiasExpectedPayment> {
             ValidationResult result = bcDataApiAdapter.checkIfValid(response);
             
             if(result.isValid()) {
-                esbService.processKiasMatchPayment(payment.getPublicId());
+                esbService.processKiasMatchPayment(payment);
             }            
         });
     }

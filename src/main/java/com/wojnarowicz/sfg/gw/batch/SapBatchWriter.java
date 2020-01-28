@@ -25,16 +25,14 @@ public class SapBatchWriter implements ItemWriter<BCExpectedPayment> {
 	
     @Override
     public void write(List<? extends BCExpectedPayment> payments) throws Exception {
-        payments.forEach(payment -> {
-            log.info("write: " + payment.getPublicId() + ", " + payment.getStatementNumber());
+            log.info("creating payload for ActOfPerformance");
             
-            ESBResponseRootDTO response = bcDataApiAdapter.actOfPerformance(payment);
+            ESBResponseRootDTO response = bcDataApiAdapter.actOfPerformance(payments);
             
             ValidationResult result = bcDataApiAdapter.checkIfValid(response);
             
             if(result.isValid()) {
-                esbService.processKiasMatchPayment(payment.getPublicId());
+                esbService.processActOfPerformance(payments);
             }            
-        });
     }
 }
