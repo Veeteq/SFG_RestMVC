@@ -77,6 +77,7 @@ class CustomerControllerTest {
         when(customerService.findAll()).thenReturn(customers);
         
         mockMvc.perform(get(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.customers", hasSize(2)));
@@ -92,6 +93,7 @@ class CustomerControllerTest {
         when(customerService.findById(anyLong())).thenReturn(customer1);
         
         mockMvc.perform(get(CustomerController.BASE_URL +  "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.lastName", equalTo(BLACK)))
@@ -108,6 +110,7 @@ class CustomerControllerTest {
         
         when(customerService.saveDTO(any(CustomerDTO.class))).thenReturn(customer1);
         mockMvc.perform(post(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer1)))
         .andExpect(status().isCreated())
@@ -127,6 +130,7 @@ class CustomerControllerTest {
         when(customerService.saveDTO(any(CustomerDTO.class))).thenReturn(customer1);
         
         String response = mockMvc.perform(post(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer1)))
                 .andReturn()
@@ -146,6 +150,7 @@ class CustomerControllerTest {
         
         when(customerService.updateDTO(any(Long.class), any(CustomerDTO.class))).thenReturn(customer1);
         mockMvc.perform(put(CustomerController.BASE_URL +  "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer1)))
         .andExpect(status().isOk())
@@ -170,6 +175,7 @@ class CustomerControllerTest {
         when(customerService.patchDTO(any(Long.class), any(CustomerDTO.class))).thenReturn(returnDTO);
         
         mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(returnDTO)))
         .andExpect(status().isOk())
@@ -182,6 +188,7 @@ class CustomerControllerTest {
     @Test
     void testDeleteById() throws Exception {
         mockMvc.perform(delete(CustomerController.BASE_URL + "/" + ID_1)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
         
@@ -193,6 +200,7 @@ class CustomerControllerTest {
         when(customerService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
         
         mockMvc.perform(get(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
     }
