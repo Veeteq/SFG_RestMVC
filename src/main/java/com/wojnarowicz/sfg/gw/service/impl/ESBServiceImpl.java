@@ -10,18 +10,21 @@ import org.springframework.stereotype.Service;
 import com.wojnarowicz.sfg.gw.adapter.KiasProcessingAdapter;
 import com.wojnarowicz.sfg.gw.api.mapper.BCExpectedPaymentMapper;
 import com.wojnarowicz.sfg.gw.api.mapper.JpaContext;
+import com.wojnarowicz.sfg.gw.api.mapper.PCPolicyMapper;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.esb.ESBRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.esb.PCPolicyDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.SapRootDTO;
 import com.wojnarowicz.sfg.gw.builder.ESBResponseBuilder;
+import com.wojnarowicz.sfg.gw.domain.Agent;
+import com.wojnarowicz.sfg.gw.domain.AgentRole;
 import com.wojnarowicz.sfg.gw.domain.BCExpectedPayment;
 import com.wojnarowicz.sfg.gw.domain.ESBHeader;
 import com.wojnarowicz.sfg.gw.domain.GWKiasPaymentStatus;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 import com.wojnarowicz.sfg.gw.domain.PCPolicy;
-import com.wojnarowicz.sfg.gw.mapper.PCPolicyMapper;
+import com.wojnarowicz.sfg.gw.domain.BCPaymentStatus;
 import com.wojnarowicz.sfg.gw.repository.AgentRepository;
 import com.wojnarowicz.sfg.gw.repository.BCExpectedPaymentRepository;
 import com.wojnarowicz.sfg.gw.repository.KiasRepository;
@@ -95,32 +98,30 @@ public class ESBServiceImpl implements ESBService {
         BCExpectedPayment bcExpectedPayment = BCExpectedPaymentMapper.INSTANCE.toBCExpectedPayment(sapRootDTO, ctx);
         bcExpectedPayment.getCoverages().forEach(coverage -> coverage.setExpectedPayment(bcExpectedPayment));
         
-/*        
+        
         sapRootDTO.getAgents().stream().forEach(agent -> {
             agent.getAgentRoles().forEach(role ->{
-                Agent savedAgent = agentRepository.findByCode(Long.valueOf(agent.getAgentCode())).orElse(null);
+                Agent savedAgent = agentRepository.findById(Long.valueOf(agent.getAgentCode())).orElse(null);
 
-                BCPaymentAgentKey key = new BCPaymentAgentKey();
-                key.setAgentCode(savedAgent.getCode());
-                key.setExpectedPaymentId(bcExpectedPayment.getPublicId());
-
-                BCPaymentAgent paymentAgent = new BCPaymentAgent();
-                paymentAgent.setKey(key);
-                paymentAgent.setAgent(savedAgent);
-                paymentAgent.setAgentRole(AgentRole.getByCode(role));
-                
-                bcExpectedPayment.addAgentRole(paymentAgent);
+                bcExpectedPayment.addAgentRole(savedAgent, AgentRole.getByCode(role));
             });
         });
-*/        
-        log.info(bcExpectedPayment.getPublicId());
+        
+        log.info(bcExpectedPayment.getId());
         log.info(bcExpectedPayment.getPolicyId());
         log.info(bcExpectedPayment.getStatementNumber());
         
         bcExpectedPayment.getCoverages().forEach(coverage -> {
             log.info("\t" + coverage.getChargeAmount().toString());
             log.info("\t" + coverage.getChargeCode());
-            log.info("\t" + coverage.getExpectedPayment().getPublicId());
+            log.info("\t" + coverage.getId());
+            log.info("\t" + coverage.getExpectedPayment().getId());
+        });
+        
+        bcExpectedPayment.getPaymentAgents().forEach(paymentAgent -> {
+            log.info("\t" + paymentAgent.getKey());
+            log.info("\t" + paymentAgent.getAgent().getName());
+            log.info("\t" + paymentAgent.getAgentRole());
         });
         
         BCExpectedPayment savedBcExpectedPayment = bcExpectedPaymentRepository.save(bcExpectedPayment);
@@ -128,7 +129,7 @@ public class ESBServiceImpl implements ESBService {
         ESBResponseRootDTO response = ESBResponseBuilder.builder()
                 .withSummary(SUCCESS, SYSTEM)
                 .withSystem(SUCCESS, SYSTEM)
-                .withDetails(savedBcExpectedPayment.getPublicId(), null, COMPONENT, SUCCESS)     
+                .withDetails(savedBcExpectedPayment.getId(), null, COMPONENT, SUCCESS)     
                 .withExtendedDetails("ESB-001", SUCCESS, "ИП начала обработку запроса")
                 .build();
         
@@ -146,7 +147,9 @@ public class ESBServiceImpl implements ESBService {
 	    log.info(pcPolicy.getOwner().getFirstName());
 	    log.info(pcPolicy.getInsured().getFirstName());
 	    log.info(pcPolicy.getMVehicle().getModel());
-
+	    log.info(pcPolicy.getPublicId());
+	    
+	    
 	    PCPolicy savedPolicy = pcPolicyRepository.save(pcPolicy);
 	    log.info(savedPolicy.getPublicId() + ", " + savedPolicy.getPolicyNumber());
 
@@ -164,10 +167,10 @@ public class ESBServiceImpl implements ESBService {
     @Override
     public void processActOfPerformance(List<? extends BCExpectedPayment> payments) {
         payments.stream().forEach(payment -> {
-            Optional<BCExpectedPayment> optional = bcExpectedPaymentRepository.findById(payment.getPublicId());
+            Optional<BCExpectedPayment> optional = bcExpectedPaymentRepository.findById(payment.getId());
             if(optional.isPresent()) {
                 BCExpectedPayment expectedPayment = optional.get();
-                expectedPayment.setPaymentStatus(1);
+                expectedPayment.setPaymentStatus(BCPaymentStatus.getById(1));
                 bcExpectedPaymentRepository.save(expectedPayment);
             }
         });

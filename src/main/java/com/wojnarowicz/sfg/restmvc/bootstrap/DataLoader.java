@@ -115,13 +115,7 @@ public class DataLoader implements CommandLineRunner {
         bso2.setStatus(BsoStatus.NEW);
         bso2.setType("40");
 
-        Agent agent1 = new Agent();
-        agent1.setCode(Long.valueOf(1588426));
-        agent1.setFirstName("Светлана");
-        agent1.setLastName("Новикова");
-        agent1.setLnr(Long.valueOf(1588426));
-        agent1.setMiddleName("Владимировна");
-        agent1.setSkk(Long.valueOf(16207320));
+        Agent agent1 = agentRepository.findById(1588426l).orElse(null);        
         agent1.addBso(bso1);
         agent1.addBso(bso2);
         

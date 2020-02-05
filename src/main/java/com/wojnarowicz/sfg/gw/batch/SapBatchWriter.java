@@ -18,11 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SapBatchWriter implements ItemWriter<BCExpectedPayment> {
 
-    private final BCDataApiAdapter bcDataApiAdapter = new BCDataApiAdapter();
+    private final BCDataApiAdapter bcDataApiAdapter;
+	private final ESBService esbService;
 
 	@Autowired
-	private ESBService esbService;
-	
+    public SapBatchWriter(BCDataApiAdapter bcDataApiAdapter, ESBService esbService) {
+        this.bcDataApiAdapter = bcDataApiAdapter;
+        this.esbService = esbService;
+    }
+
     @Override
     public void write(List<? extends BCExpectedPayment> payments) throws Exception {
             log.info("creating payload for ActOfPerformance");

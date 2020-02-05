@@ -5,12 +5,14 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -23,6 +25,7 @@ import com.wojnarowicz.sfg.gw.api.controller.HeaderConstants;
 import com.wojnarowicz.sfg.gw.api.model.ESBResponseRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.kias.KiasRootDTO;
 import com.wojnarowicz.sfg.gw.api.model.sap.ActOfPerformanceDTO;
+import com.wojnarowicz.sfg.gw.config.ExternalProperties;
 import com.wojnarowicz.sfg.gw.domain.BCExpectedPayment;
 import com.wojnarowicz.sfg.gw.domain.KiasExpectedPayment;
 import com.wojnarowicz.sfg.gw.mapper.BCDataApiMapper;
@@ -31,12 +34,13 @@ import com.wojnarowicz.sfg.gw.validators.ValidationResult;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class BCDataApiAdapter {
     
     private static final String BC_URL = "http://localhost:8580/bc/rest/";
     private static final String PAYMENT_NOTIFICATION_API = "paymentnotification";
     private static final String ACT_OF_PERFORMANCE_API = "sapactofperformance";
-    private final static ObjectMapper _mapper = initMapper();
+    private static final ObjectMapper _mapper = initMapper();
 
     private static ObjectMapper initMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -44,6 +48,13 @@ public class BCDataApiAdapter {
         mapper.setSerializationInclusion(Include.NON_EMPTY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
+    }
+
+    private final ExternalProperties externalProperties;
+
+    @Autowired
+    public BCDataApiAdapter(ExternalProperties externalProperties) {
+        this.externalProperties = externalProperties;
     }
 
     public ESBResponseRootDTO matchPayment(KiasExpectedPayment payment) {
@@ -101,7 +112,7 @@ public class BCDataApiAdapter {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         
-        String authStr = "${rest.auth}";
+        String authStr = externalProperties.getAuthStr();
         String base64Creds = Base64.getEncoder().encodeToString(authStr.getBytes());
         headers.add("Authorization", "Basic " + base64Creds);
 

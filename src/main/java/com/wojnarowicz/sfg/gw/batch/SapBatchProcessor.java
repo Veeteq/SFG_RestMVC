@@ -15,7 +15,7 @@ public class SapBatchProcessor implements ItemProcessor<BCExpectedPayment, BCExp
 
     @Override
     public BCExpectedPayment process(BCExpectedPayment bcExpectedPayment) throws Exception {
-        log.info("process: " + bcExpectedPayment.getPublicId() + ", " + bcExpectedPayment.getStatementNumber());
+        log.info("process: " + bcExpectedPayment.getId() + ", " + bcExpectedPayment.getStatementNumber());
         
         return bcExpectedPayment;
     }

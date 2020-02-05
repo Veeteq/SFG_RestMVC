@@ -23,11 +23,9 @@ public class BCDataApiMapper {
 
     private static final BigDecimal commissionPrcnt = new BigDecimal("0.1");
     
-    private DateTimeFormatter formatToKey = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
+    private DateTimeFormatter formatToKey = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
     private DateTimeFormatter formatToDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     NumberFormat numberFormat;
-    
-    
     
     public BCDataApiMapper() {
         numberFormat = NumberFormat.getInstance(Locale.US);
@@ -36,14 +34,15 @@ public class BCDataApiMapper {
         numberFormat.setGroupingUsed(false);
     }
 
-
     public KiasRootDTO mapMatchPaymentRequest(KiasExpectedPayment kiasExpectedPayment) {
         LocalDateTime currentDateTime = LocalDateTime.now();
+        
+        BigDecimal paidAmountFactor = kiasExpectedPayment.getPayerType().equals("1") ? BigDecimal.ONE : BigDecimal.ONE.subtract(commissionPrcnt);
         
         KiasMatchPaymentAccountDTO matchPaymentAccount = new KiasMatchPaymentAccountDTO();
         matchPaymentAccount.setExpPaymentId(kiasExpectedPayment.getPublicId());
         matchPaymentAccount.setTransactionDate(currentDateTime.format(formatToDate));
-        matchPaymentAccount.setPaidAmount(numberFormat.format(kiasExpectedPayment.getAmount().multiply(BigDecimal.ONE.subtract(commissionPrcnt))));
+        matchPaymentAccount.setPaidAmount(numberFormat.format(kiasExpectedPayment.getAmount().multiply(paidAmountFactor)));
         matchPaymentAccount.setPaidDocId("AAA");
         matchPaymentAccount.setPaidDocNum("101");
         matchPaymentAccount.setPaidDate(currentDateTime.format(formatToDate));
@@ -101,8 +100,8 @@ public class BCDataApiMapper {
     private ActOfPerformanceCommissionDTO mapCoverageToCommissionDTO(BCCoverage bcCoverage) {
         ActOfPerformanceCommissionDTO commissionDTO = new ActOfPerformanceCommissionDTO();
         commissionDTO.setPolicyId(bcCoverage.getExpectedPayment().getPolicyId());
-        commissionDTO.setPaymentId(bcCoverage.getExpectedPayment().getPublicId());
-        commissionDTO.setChargeItemId(bcCoverage.getChargeItemId());
+        commissionDTO.setPaymentId(bcCoverage.getExpectedPayment().getId());
+        commissionDTO.setChargeItemId(bcCoverage.getId());
         commissionDTO.setReportSystemCode("Code");
         commissionDTO.setCommissionAmt(numberFormat.format(bcCoverage.getChargeAmount().multiply(commissionPrcnt)));
         commissionDTO.setCommissionCur(bcCoverage.getChargeCurrency().name());

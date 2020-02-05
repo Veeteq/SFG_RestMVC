@@ -31,7 +31,7 @@ class BCExpectedPaymentMapperTest {
         JpaContext jpaCtx = new JpaContext();
         BCExpectedPayment bcExpectedPayment = mapper.toBCExpectedPayment(sapRootDTO, jpaCtx);
         
-        assertEquals(publicId, bcExpectedPayment.getPublicId());
+        assertEquals(publicId, bcExpectedPayment.getId());
         assertEquals(PCCurrency.RUB, bcExpectedPayment.getPaymentCurrency());
     }
 

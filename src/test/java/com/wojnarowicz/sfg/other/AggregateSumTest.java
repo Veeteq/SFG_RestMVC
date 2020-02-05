@@ -25,15 +25,16 @@ class AggregateSumTest {
         public void setId(String id) {
             this.id = id;
         }
-        public String getSubId() {
-            return subId;
-        }
+//        public String getSubId() {
+//            return subId;
+//        }
         public void setSubId(String subId) {
             this.subId = subId;
         }
-        public int getValue() {
-            return value;
-        }
+//        public int getValue() {
+//            return value;
+//        }
+        
         public void setValue(int value) {
             this.value = value;
         }

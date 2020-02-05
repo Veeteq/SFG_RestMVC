@@ -7,9 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass
-public abstract class BaseEntity implements Serializable, Comparable<BaseEntity> {
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class NumericEntity implements Serializable, Comparable<NumericEntity> {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -25,8 +29,8 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
 	}	
 
 	@Override
-	public int compareTo(BaseEntity other) {
-		if(other instanceof BaseEntity) {
+	public int compareTo(NumericEntity other) {
+		if(other instanceof NumericEntity) {
 			return this.getId().compareTo(other.getId());
 		}
 		return -1;
@@ -48,7 +52,7 @@ public abstract class BaseEntity implements Serializable, Comparable<BaseEntity>
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BaseEntity other = (BaseEntity) obj;
+		NumericEntity other = (NumericEntity) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

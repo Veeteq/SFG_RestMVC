@@ -1,4 +1,4 @@
-package com.wojnarowicz.sfg.gw.mapper;
+package com.wojnarowicz.sfg.gw.api.mapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public interface PCPolicyMapper {
 
     PCPolicyMapper INSTANCE = Mappers.getMapper(PCPolicyMapper.class);
     
-    @Mapping(source = "policyPublicId", target = "publicId")
+    @Mapping(source = "policyPublicId",     target = "publicId")
     @Mapping(target = "startDate",          expression = "java(LocalDateTime.parse(policyDTO.startDate, DateTimeFormatter.ISO_ZONED_DATE_TIME))")
     @Mapping(target = "endDate",            expression = "java(LocalDateTime.parse(policyDTO.endDate, DateTimeFormatter.ISO_ZONED_DATE_TIME))")
     @Mapping(target = "insuredPremiumDate", expression = "java(LocalDate.parse(policyDTO.insuredPremiumDate, DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))")

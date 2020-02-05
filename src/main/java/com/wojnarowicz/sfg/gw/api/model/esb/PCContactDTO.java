@@ -63,7 +63,7 @@ public class PCContactDTO {
     public String middleName;
 
     @JsonProperty("PublicID")
-    public String publicID;
+    public String publicId;
 
     @JsonProperty("Resident")
     public String resident;

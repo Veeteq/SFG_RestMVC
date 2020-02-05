@@ -5,14 +5,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import com.wojnarowicz.sfg.gw.converter.BCPaymentStatusConverter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,18 +27,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "bc_expected_payments")
-public class BCExpectedPayment {
+@AttributeOverride(name="id", column=@Column(name="public_id"))
+public class BCExpectedPayment extends StringEntity {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "public_id")
-    private String publicId;
-    
     @Column(name = "policy_id")
     private String policyId;
     
-    @OneToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.REFRESH}, mappedBy = "expectedPayment")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "expectedPayment")
+    @NotFound(action = NotFoundAction.IGNORE)
     private List<BCPaymentAgent> paymentAgents = new ArrayList<>();
     
     @OneToMany(mappedBy = "expectedPayment", cascade = {CascadeType.ALL})
@@ -47,7 +50,11 @@ public class BCExpectedPayment {
     private LocalDate paymentDateOnAccountRGS;
     private LocalDate lastPaymentDate;
     private BigDecimal yetPayInsurancePremium;
-    private Integer paymentStatus;
+    
+    @Column(name = "payment_status")
+    @Convert(converter = BCPaymentStatusConverter.class)
+    private BCPaymentStatus paymentStatus;
+    
     private String typeOfOperation;
     private String productCode;
     private String subProductCode;
@@ -58,6 +65,11 @@ public class BCExpectedPayment {
     
     public void addAgentRole(BCPaymentAgent paymentAgent) {
         paymentAgent.setExpectedPayment(this);
+        this.paymentAgents.add(paymentAgent);
+    }
+
+    public void addAgentRole(Agent savedAgent, AgentRole agentRole) {
+        BCPaymentAgent paymentAgent = new BCPaymentAgent(this, savedAgent, agentRole);
         this.paymentAgents.add(paymentAgent);
     }
 }

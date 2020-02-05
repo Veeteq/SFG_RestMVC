@@ -30,7 +30,7 @@ import lombok.Setter;
 @Table(name="bso_documents", uniqueConstraints = {@UniqueConstraint(columnNames = {"bso_series", "bso_number", "bso_type"}, name = "fk_bso_series_number_type_index_1")})
 @AttributeOverride(name="id", column=@Column(name="bso_document_id"))
 @SequenceGenerator(name="default_seq", sequenceName="bso_seq", allocationSize=1)
-public class BsoDocument extends BaseEntity {
+public class BsoDocument extends NumericEntity {
 
     private static final long serialVersionUID = 1L;
 

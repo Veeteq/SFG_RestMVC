@@ -22,7 +22,7 @@ import lombok.Setter;
 @Table(name = "contracts")
 @AttributeOverride(name="id", column=@Column(name="policy_id"))
 @SequenceGenerator(name="default_seq", sequenceName="contract_seq", allocationSize=1)
-public class Contract extends BaseEntity {
+public class Contract extends NumericEntity {
     private static final long serialVersionUID = 1L;
 
     @OneToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH}, mappedBy = "contract")
@@ -40,7 +40,7 @@ public class Contract extends BaseEntity {
     @Column(name = "due_date", columnDefinition="TIMESTAMP", nullable=true)
     private LocalDateTime dueDate;
 
-    public void addBsoDocument(BsoDocument bsoDocument) {
+     public void addBsoDocument(BsoDocument bsoDocument) {
         bsoDocument.setContract(this);
         this.bsoDocuments.add(bsoDocument);
     }

@@ -18,10 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KiasBatchWriter implements ItemWriter<KiasExpectedPayment> {
 
-    private final BCDataApiAdapter bcDataApiAdapter = new BCDataApiAdapter();
+    private final BCDataApiAdapter bcDataApiAdapter;
+    private final ESBService esbService;
 
 	@Autowired
-	private ESBService esbService;
+    public KiasBatchWriter(BCDataApiAdapter bcDataApiAdapter, ESBService esbService) {
+        this.bcDataApiAdapter = bcDataApiAdapter;
+        this.esbService = esbService;
+    }
 	
     @Override
     public void write(List<? extends KiasExpectedPayment> payments) throws Exception {

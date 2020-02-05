@@ -17,6 +17,6 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
 
 	Optional<Agent> findByLnrAndSkk(Long lnr, Long skk);
 
-	Optional<Agent> findByCode(Long code); 
+	//Optional<Agent> findByCode(Long code); 
 
 }

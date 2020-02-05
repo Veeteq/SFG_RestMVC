@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "bso_issuances")
 @AttributeOverride(name="id", column=@Column(name="bso_issuance_id"))
 @SequenceGenerator(name="default_seq", sequenceName="bso_issuance_seq", allocationSize=1)
-public class BsoIssuance extends BaseEntity {
+public class BsoIssuance extends NumericEntity {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})

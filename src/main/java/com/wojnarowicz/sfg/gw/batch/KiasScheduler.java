@@ -28,7 +28,7 @@ public class KiasScheduler {
     @Autowired
     Job sapJob;
     
-    @Scheduled(cron = "0 3/15 * * * ?")
+    @Scheduled(cron = "0 1/20 * * * ?")
     public void myScheduler() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
@@ -44,7 +44,7 @@ public class KiasScheduler {
         System.out.println("KIAS Scheduler executed");
     }
     
-    @Scheduled(cron = "0 5/10 * * * ?")
+    @Scheduled(cron = "0 2/20 * * * ?")
     public void ESBScheduler() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())

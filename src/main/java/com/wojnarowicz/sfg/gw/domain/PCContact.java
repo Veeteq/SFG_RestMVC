@@ -23,7 +23,7 @@ public class PCContact {
 
     @Id
     @Column(name = "public_id")
-    private String publicID;
+    private String publicId;
     
     @Embedded
     private PCAddress address;
