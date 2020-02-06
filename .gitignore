@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+spring5-mvc-rest-app/src/main/resources/auth.properties
 
 ### STS ###
 .apt_generated
