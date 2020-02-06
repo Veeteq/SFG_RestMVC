@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.wojnarowicz.sfg.restmvc.api.v1.mapper.CustomerMapper;
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
+import com.wojnarowicz.sfg.rest.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
 import com.wojnarowicz.sfg.restmvc.repositories.CustomerRepository;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;

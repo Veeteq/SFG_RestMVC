@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
+import com.wojnarowicz.sfg.rest.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.domain.Customer;
 
 class CustomerMapperTest {

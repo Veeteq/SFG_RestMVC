@@ -2,7 +2,7 @@ package com.wojnarowicz.sfg.restmvc.service;
 
 import java.util.List;
 
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
+import com.wojnarowicz.sfg.rest.CustomerDTO;
 
 public interface CustomerService {
 

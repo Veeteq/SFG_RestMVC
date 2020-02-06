@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
+import com.wojnarowicz.sfg.rest.CustomerDTO;
 import com.wojnarowicz.sfg.restmvc.exception.ResourceNotFoundException;
 import com.wojnarowicz.sfg.restmvc.exception.RestResponseEntityExceptionHandler;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;

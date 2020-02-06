@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerDTO;
-import com.wojnarowicz.sfg.restmvc.api.v1.model.CustomerListDTO;
+import com.wojnarowicz.sfg.rest.CustomerDTO;
+import com.wojnarowicz.sfg.rest.CustomerListDTO;
 import com.wojnarowicz.sfg.restmvc.service.CustomerService;
 
 import io.swagger.annotations.Api;
@@ -37,7 +37,9 @@ public class CustomerController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public CustomerListDTO listCustomers() {
-        return new CustomerListDTO(customerService.findAll());
+        CustomerListDTO customerListDTO = new CustomerListDTO();
+        customerListDTO.getCustomers().addAll(customerService.findAll());
+        return customerListDTO;
     }
     
     @ApiOperation(value = "Returns Customer By Id", notes = "Return customers by Id")
